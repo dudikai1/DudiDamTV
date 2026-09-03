@@ -140,10 +140,12 @@
             <div class="video-container">
                 <div id="status">לחץ על "הפעל מצלמה"</div>
                 <div class="videos">
+                    <!-- המצלמה שלך (שמאל) -->
                     <div class="video-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
 
+                    <!-- מסך טלוויזיה / משתמש שני (ימין) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -159,7 +161,7 @@
                     </div>
                 </div>
                 
-                .controls {
+                <div class="controls">
                     <button class="btn-cam" id="camBtn">הפעל מצלמה</button>
                     <button class="btn-stop" id="stopBtn">הפסק</button>
                     <button class="btn-next" id="nextBtn">הבא</button>
@@ -177,24 +179,30 @@
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
+        const remoteBox = document.getElementById('remoteBox');
         const statusDiv = document.getElementById('status');
 
         async function startCamera() {
             try {
                 statusDiv.textContent = 'מבקש גישה למצלמה...';
                 
-                // בקשה ישירה ופשוטה ביותר למצלמה ולמיקרופון
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: true, 
-                    audio: true 
-                });
+                // שליפת רשימת התקני וידאו למניעת נפילות
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(d => d.kind === 'videoinput');
                 
+                let constraints = { video: true, audio: true };
+                if (videoDevices.length > 0) {
+                    constraints.video = { deviceId: { exact: videoDevices[0].deviceId } };
+                }
+
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = stream;
+                await localVideo.play();
                 statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
             } catch (error) {
                 console.error('Camera error:', error);
-                statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
-                alert('הדפדפן חסם את המצלמה. לחץ על המנעול בשורת הכתובת למעלה, אפשר מצלמה ורענן את העמוד.');
+                statusDiv.textContent = 'שגיאה: מצלמה לא זמינה';
+                alert('הדפדפן נחסם. לחץ על כפתור איפוס ההרשאות ליד כתובת האתר, רענס את העמוד ונסה שוב.');
             }
         }
 
