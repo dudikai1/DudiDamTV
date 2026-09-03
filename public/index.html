@@ -346,17 +346,17 @@
             remotePlaceholder.style.display = 'flex';
             currentPartnerId = null;
         }
-
-    stopBtn.addEventListener('click', () => {
+stopBtn.addEventListener('click', () => {
     resetPeerConnection();
     socket.emit('skip');
     statusDiv.textContent = "Stopped";
-      
-        const sendMsgBtn = document.getElementById('sendMsgBtn');
-        const msgInput = document.getElementById('msgInput');
-        const messagesContainer = document.querySelector('.messages');
+});
 
-  const sendMessage = () => {
+const sendMsgBtn = document.getElementById('sendMsgBtn');
+const msgInput = document.getElementById('msgInput');
+const messagesContainer = document.querySelector('.messages');
+
+const sendMessage = () => {
     const text = msgInput.value.trim();
     if (text !== '') {
         const msgDiv = document.createElement('div');
