@@ -143,10 +143,7 @@
             <div class="video-container">
                 <div id="status">ממתין להפעלה...</div>
                 <div class="videos">
-                    <div class="video-box">
-                        <video id="localVideo" autoplay playsinline muted></video>
-                    </div>
-                    
+                    <!-- מסך האדם השני (שמאל) עם השלג והלוגו -->
                     <div class="video-box noise-bg" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -159,6 +156,11 @@
                             </div>
                         </div>
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+                    </div>
+
+                    <!-- המצלמה שלך (ימין) -->
+                    <div class="video-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
                     </div>
                 </div>
                 
@@ -190,7 +192,7 @@
                 statusDiv.textContent = 'מחובר (מוכן להתחלה)';
             } catch (err) {
                 console.error(err);
-                statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
+                statusDiv.textContent = 'שגיאה: אין גישה למצלמה (בדוק הרשאות)';
             }
         });
 
