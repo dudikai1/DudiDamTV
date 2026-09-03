@@ -11,34 +11,67 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-let onlineUsers = 0;
 let waitingUser = null;
 
 io.on('connection', (socket) => {
-    onlineUsers++;
-    io.emit('update-user-count', onlineUsers);
+    console.log('משתמש התחבר:', socket.id);
 
     socket.on('find-partner', () => {
-        if (waitingUser && waitingUser !== socket.id) {
-            io.to(waitingUser).emit('matched', socket.id);
-            socket.emit('matched', waitingUser);
+        if (waitingUser && waitingUser.id !== socket.id) {
+            const partner = waitingUser;
             waitingUser = null;
+
+            socket.partnerId = partner.id;
+            partner.partnerId = socket.id;
+
+            socket.emit('matched', { initiator: true, partnerId: partner.id });
+            partner.emit('matched', { initiator: false, partnerId: socket.id });
+            console.log(`נוצר חיבור בין ${socket.id} ל-${partner.id}`);
         } else {
-            waitingUser = socket.id;
-            socket.emit('no-users-yet');
+            waitingUser = socket;
+            socket.emit('waiting');
+            console.log('משתמש ממתין:', socket.id);
         }
+    });
+
+    socket.on('offer', (data) => {
+        io.to(data.target).emit('offer', { offer: data.offer, sender: socket.id });
+    });
+
+    socket.on('answer', (data) => {
+        io.to(data.target).emit('answer', { answer: data.answer, sender: socket.id });
+    });
+
+    socket.on('ice-candidate', (data) => {
+        io.to(data.target).emit('ice-candidate', { candidate: data.candidate, sender: socket.id });
+    });
+
+    socket.on('skip', () => {
+        disconnectPartner(socket);
+        waitingUser = socket;
+        socket.emit('waiting');
     });
 
     socket.on('disconnect', () => {
-        onlineUsers = Math.max(0, onlineUsers - 1);
-        io.emit('update-user-count', onlineUsers);
-        
-        if (waitingUser === socket.id) {
+        console.log('משתמש התנתק:', socket.id);
+        if (waitingUser === socket) {
             waitingUser = null;
         }
+        disconnectPartner(socket);
     });
 });
 
+function disconnectPartner(socket) {
+    if (socket.partnerId) {
+        const partner = io.sockets.sockets.get(socket.partnerId);
+        if (partner) {
+            partner.partnerId = null;
+            partner.emit('partner-disconnected');
+        }
+        socket.partnerId = null;
+    }
+}
+
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`השרת רץ בפורט ${PORT}`);
 });
