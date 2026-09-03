@@ -138,7 +138,7 @@
             </div>
 
             <div class="video-container">
-                <div id="status">לחץ על F12 ואז על הכפתור</div>
+                <div id="status">לחץ על הפעל מצלמה</div>
                 <div class="videos">
                     <!-- המצלמה שלך (שמאל) -->
                     <div class="video-box">
@@ -184,29 +184,18 @@
         async function startCamera() {
             try {
                 statusDiv.textContent = 'מבקש גישה למצלמה...';
-                console.log("Requesting media devices...");
-                
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: true, 
-                    audio: true 
-                });
-                
-                console.log("Stream acquired successfully:", stream);
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = stream;
-                
-                // הכרחת הפעלה ידנית לוודא שהווידאו מתנגן במסך
                 await localVideo.play();
-                console.log("Local video is playing");
-                
                 statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
             } catch (error) {
-                console.error('Detailed Camera error:', error);
-                statusDiv.textContent = 'שגיאה: ' + error.name;
-                alert('שגיאת מצלמה: ' + error.message);
+                console.error('Camera error:', error);
+                statusDiv.textContent = 'שגיאה בהפעלת מצלמה';
+                alert('שגיאה: ' + error.message);
             }
         }
 
-        camBtn.addEventListner ? camBtn.addEventListener('click', startCamera) : camBtn.onclick = startCamera;
+        camBtn.addEventListener('click', startCamera);
 
         function showNoUsers() {
             statusDiv.textContent = 'אין משתמשים מחוברים';
