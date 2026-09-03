@@ -109,6 +109,7 @@
             background-color: #181818;
         }
 
+        /* 4 Colorful Action Buttons Style matching image_217746.png */
         .controls { 
             margin-top: 15px; 
             display: flex; 
@@ -129,7 +130,10 @@
             transition: transform 0.1s, box-shadow 0.1s;
         }
 
-        .btn-action:active { transform: translateY(2px); }
+        .btn-action:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
 
         .btn-start { background-color: #00e676; color: #000; }
         .btn-next { background-color: #ff9800; color: #000; }
@@ -151,8 +155,6 @@
             .video-container { height: 65%; }
         }
     </style>
-    <!-- טעינת סקריפט של Socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
@@ -170,11 +172,14 @@
             </div>
 
             <div class="video-container">
-                <div id="status">לחץ על "הפעל מצלמה" ואז "התחל"</div>
+                <div id="status">לחץ על "הפעל מצלמה"</div>
                 <div class="videos">
+                    <!-- המצלמה שלך (שמאל) -->
                     <div class="video-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
+
+                    <!-- מסך טלוויזיה / משתמש שני (ימין) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -190,6 +195,7 @@
                     </div>
                 </div>
                 
+                <!-- 4 Action Buttons Bar matching image_217746.png layout -->
                 <div class="controls">
                     <button class="btn-action btn-start" id="startBtn">התחל</button>
                     <button class="btn-action btn-next" id="nextBtn">הבא</button>
@@ -201,7 +207,6 @@
     </div>
 
     <script>
-        const socket = io();
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const nextBtn = document.getElementById('nextBtn');
@@ -211,139 +216,71 @@
         const remotePlaceholder = document.getElementById('remotePlaceholder');
         const statusDiv = document.getElementById('status');
 
-        let localStream = null;
-        let peerConnection = null;
-        let currentPartnerId = null;
-
-        const iceServers = {
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-        };
-
-        // הפעלת מצלמה מקומית
-        camBtn.addEventListener('click', async () => {
+        async function startCamera() {
             try {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                localVideo.srcObject = localStream;
-                statusDiv.textContent = 'המצלמה פועלת. לחץ על "התחל" כדי למצוא משתמש';
-            } catch (err) {
-                alert('שגיאה בגישה למצלמה');
+                statusDiv.textContent = 'מבקש גישה למצלמה...';
+                
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(d => d.kind === 'videoinput');
+                
+                let constraints = { video: true, audio: true };
+                if (videoDevices.length > 0) {
+                    constraints.video = { deviceId: { exact: videoDevices[0].deviceId } };
+                }
+
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                localVideo.srcObject = stream;
+                await localVideo.play();
+                statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
+            } catch (error) {
+                console.error('Camera error:', error);
+                statusDiv.textContent = 'שגיאה: מצלמה לא זמינה';
+                alert('הדפדפן נחסם. לחץ על כפתור איפוס ההרשאות ליד כתובת האתר, רענן את העמוד ונסה שוב.');
             }
-        });
+        }
 
-        // התחלת חיפוש משתמש
-        startBtn.addEventListener('click', () => {
-            if (!localStream) {
-                alert('אנא הפעל מצלמה קודם');
-                return;
-            }
-            statusDiv.textContent = 'מחפש משתמש פנוי...';
-            socket.emit('find-partner');
-        });
+        camBtn.addEventListener('click', startCamera);
 
-        // כפתור הבא (דילוג למשתמש אחר)
-        nextBtn.addEventListener('click', () => {
-            resetPeerConnection();
-            statusDiv.textContent = 'מחפש משתמש חדש...';
-            socket.emit('skip');
-        });
+        function showNoUsers() {
+            statusDiv.textContent = 'אין משתמשים מחוברים';
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
+        }
 
-        // עצירה
+        startBtn.addEventListener('click', showNoUsers);
+        nextBtn.addEventListener('click', showNoUsers);
+
         stopBtn.addEventListener('click', () => {
-            resetPeerConnection();
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
+            statusDiv.textContent = 'הופסק';
+            
+            if (localVideo.srcObject) {
+                localVideo.srcObject.getTracks().forEach(track => track.stop());
                 localVideo.srcObject = null;
             }
-            statusDiv.textContent = 'הופסק';
         });
 
-        socket.on('waiting', () => {
-            statusDiv.textContent = 'מחפש משתמשים נוספים...';
-            resetPeerConnection();
-        });
+        const sendMsgBtn = document.getElementById('sendMsgBtn');
+        const msgInput = document.getElementById('msgInput');
+        const messagesContainer = document.querySelector('.messages');
 
-        // נמצא חיבור
-        socket.on('matched', async (data) => {
-            currentPartnerId = data.partnerId;
-            statusDiv.textContent = 'התחברת למשתמש! יוצר שיחה...';
-            
-            peerConnection = new RTCPeerConnection(iceServers);
-
-            // הוספת הסטרים שלך לחיבור
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-            // קבלת הווידאו של הצד השני
-            peerConnection.ontrack = (event) => {
-                remoteVideo.srcObject = event.streams[0];
-                remoteVideo.style.display = 'block';
-                remotePlaceholder.style.display = 'none';
-                statusDiv.textContent = 'מחובר!';
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket.emit('ice-candidate', { candidate: event.candidate, target: currentPartnerId });
-                }
-            };
-
-            if (data.initiator) {
-                const offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-                socket.emit('offer', { offer, target: currentPartnerId });
+        const sendMessage = () => {
+            const text = msgInput.value.trim();
+            if (text !== '') {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message self';
+                msgDiv.textContent = text;
+                messagesContainer.appendChild(msgDiv);
+                msgInput.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
+        };
+
+        sendMsgBtn.addEventListener('click', sendMessage);
+        msgInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
         });
-
-        socket.on('offer', async (data) => {
-            currentPartnerId = data.sender;
-            peerConnection = new RTCPeerConnection(iceServers);
-
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-            peerConnection.ontrack = (event) => {
-                remoteVideo.srcObject = event.streams[0];
-                remoteVideo.style.display = 'block';
-                remotePlaceholder.style.display = 'none';
-                statusDiv.textContent = 'מחובר!';
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket.emit('ice-candidate', { candidate: event.candidate, target: currentPartnerId });
-                }
-            };
-
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            socket.emit('answer', { answer, target: currentPartnerId });
-        });
-
-        socket.on('answer', async (data) => {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-        });
-
-        socket.on('ice-candidate', async (data) => {
-            if (peerConnection) {
-                await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-            }
-        });
-
-        socket.on('partner-disconnected', () => {
-            statusDiv.textContent = 'המשתמש השני התנתק. מחפש חדש...';
-            resetPeerConnection();
-            socket.emit('find-partner');
-        });
-
-        function resetPeerConnection() {
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-            remoteVideo.style.display = 'none';
-            remotePlaceholder.style.display = 'flex';
-            currentPartnerId = null;
-        }
     </script>
 </body>
 </html>
