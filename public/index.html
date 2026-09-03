@@ -127,4 +127,139 @@
         .controls { margin-top: 15px; display: flex; gap: 15px; }
         button { padding: 10px 22px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-start { background-color: #00e676; color: #000; }
-        .btn-next { background-color: #ff9800; color: #
+        .btn-next { background-color: #ff9800; color: #000; }
+        .btn-stop { background-color: #f44336; color: #fff; }
+        
+        .chat-container { flex: 1; background-color: #1e1e1e; display: flex; flex-direction: column; border-right: 2px solid #333; }
+        .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { background-color: #333; padding: 8px 12px; border-radius: 5px; max-width: 80%; }
+        .message.self { align-self: flex-end; background-color: #00e676; color: #000; }
+        .chat-input { display: flex; padding: 10px; background-color: #252525; }
+        .chat-input input { flex: 1; padding: 10px; border: none; border-radius: 5px; background-color: #333; color: #fff; margin-left: 10px; }
+        .chat-input button { background-color: #00e676; color: #000; }
+        #status { position: absolute; top: 15px; background: rgba(0, 0, 0, 0.7); padding: 6px 14px; border-radius: 20px; font-size: 13px; z-index: 10; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column-reverse; }
+            .chat-container { height: 35%; border-right: none; border-top: 2px solid #333; }
+            .video-container { height: 65%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-app">
+        <header>DudiDamTV</header>
+        <div class="main-container">
+            <div class="chat-container">
+                <div class="messages">
+                    <div class="message">ברוך הבא ל-DudiDamTV!</div>
+                </div>
+                <div class="chat-input">
+                    <button id="sendMsgBtn">שלח</button>
+                    <input type="text" id="msgInput" placeholder="רשום הודעה...">
+                </div>
+            </div>
+
+            <div class="video-container">
+                <div id="status">ממתין להפעלה...</div>
+                <div class="videos">
+                    <!-- מסך המצלמה שלך (ימין) -->
+                    <div class="video-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
+                    
+                    <!-- מסך האדם השני (שמאל) - עם הלוגו והשלג כברירת מחדל -->
+                    <div class="video-box noise-bg" id="remoteBox">
+                        <div id="remotePlaceholder">
+                            <div class="tv-logo-box">
+                                <div class="tv-buttons">
+                                    <div class="tv-btn-dot"></div>
+                                    <div class="tv-btn-dot"></div>
+                                </div>
+                                .tv-title-1>DudiDam</div>
+                                <div class="tv-title-2">TV</div>
+                            </div>
+                        </div>
+                        <video id="remoteVideo" autoplay playsinline style="position: relative; z-index: 6; display: none;"></video>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn-stop" id="stopBtn">הפסק</button>
+                    <button class="btn-next" id="nextBtn">הבא</button>
+                    <button class="btn-start" id="startBtn">התחל</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const remotePlaceholder = document.getElementById('remotePlaceholder');
+        const statusDiv = document.getElementById('status');
+        let localStream = null;
+
+        // הפעלה אוטומטית של המצלמה שלך ברגע שהדף נטען
+        window.addEventListener('load', async () => {
+            try {
+                statusDiv.textContent = 'מפעיל מצלמה...';
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                localVideo.srcObject = localStream;
+                statusDiv.textContent = 'מחובר (מוכן להתחלה)';
+            } catch (err) {
+                console.error(err);
+                statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
+            }
+        });
+
+        // כשתלחץ "התחל" - כרגע אין אנשים, לכן הוא ישאר במצב חיפוש והלוגו יישאר במקום
+        startBtn.addEventListener('click', () => {
+            statusDiv.textContent = 'מחפש משתמש... (אין כרגע משתמשים אחרים)';
+            // מוודאים שהלוגו נשאר כי אין עדיין וידאו אמיתי של מישהו אחר
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
+        });
+
+        // כשתלחץ "הפסק"
+        stopBtn.addEventListener('click', () => {
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
+            remoteVideo.srcObject = null;
+            statusDiv.textContent = 'הופסק';
+        });
+
+        // כשתלחץ "הבא"
+        nextBtn.addEventListener('click', () => {
+            statusDiv.textContent = 'מחפש משתמש חדש...';
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
+        });
+
+        const sendMsgBtn = document.getElementById('sendMsgBtn');
+        const msgInput = document.getElementById('msgInput');
+        const messagesContainer = document.querySelector('.messages');
+
+        const sendMessage = () => {
+            const text = msgInput.value.trim();
+            if (text !== '') {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message self';
+                msgDiv.textContent = text;
+                messagesContainer.appendChild(msgDiv);
+                msgInput.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        };
+
+        sendMsgBtn.addEventListener('click', sendMessage);
+        msgInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
