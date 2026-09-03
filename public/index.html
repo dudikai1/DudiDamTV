@@ -350,9 +350,8 @@
     stopBtn.addEventListener('click', () => {
     resetPeerConnection();
     socket.emit('skip');
-    statusDiv.textContent = 'השיחה נעצרה. לחץ על "התחל" לחיפוש חדש'
-        });
-
+    statusDiv.textContent = 'השיחה נעצרה. לחץ על "התחל" לחיפוש חדש";
+      
         const sendMsgBtn = document.getElementById('sendMsgBtn');
         const msgInput = document.getElementById('msgInput');
         const messagesContainer = document.querySelector('.messages');
