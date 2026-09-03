@@ -103,12 +103,11 @@
             z-index: 5;
         }
 
-        .controls { margin-top: 15px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
-        button { padding: 10px 18px; font-size: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .controls { margin-top: 15px; display: flex; gap: 15px; }
+        button { padding: 10px 22px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-start { background-color: #00e676; color: #000; }
         .btn-next { background-color: #ff9800; color: #000; }
         .btn-stop { background-color: #f44336; color: #fff; }
-        .btn-cam { background-color: #2196F3; color: #fff; }
         
         .chat-container { flex: 1; background-color: #1e1e1e; display: flex; flex-direction: column; border-right: 2px solid #333; }
         .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -142,14 +141,13 @@
             </div>
 
             <div class="video-container">
-                <div id="status">לחץ על "הפעל מצלמה" כדי להתחיל</div>
+                <div id="status">ממתין להפעלה...</div>
                 <div class="videos">
-                    <!-- המצלמה שלך (שמאל) -->
                     <div class="video-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
-
-                    <!-- מסך הטלוויזיה / האדם השני (ימין) -->
+                    
+                    <!-- מסך האדם השני (שמאל) -->
                     <div class="video-box noise-bg" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -166,7 +164,6 @@
                 </div>
                 
                 <div class="controls">
-                    <button class="btn-cam" id="camBtn">הפעל מצלמה</button>
                     <button class="btn-stop" id="stopBtn">הפסק</button>
                     <button class="btn-next" id="nextBtn">הבא</button>
                     <button class="btn-start" id="startBtn">התחל</button>
@@ -179,7 +176,6 @@
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const camBtn = document.getElementById('camBtn');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
@@ -187,37 +183,43 @@
         const statusDiv = document.getElementById('status');
         let localStream = null;
 
-        async function initCamera() {
+        window.addEventListener('load', async () => {
             try {
-                statusDiv.textContent = 'מבקש גישה למצלמה...';
+                statusDiv.textContent = 'מפעיל מצלמה...';
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
-                statusDiv.textContent = 'המצלמה פועלת בהצלחה';
+                statusDiv.textContent = 'מחובר (מוכן להתחלה)';
             } catch (err) {
                 console.error(err);
-                statusDiv.textContent = 'שגיאה: הדפדפן חסם מצלמה או שהיא בשימוש';
+                statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
             }
-        }
-
-        window.addEventListener('load', () => {
-            initCamera();
         });
 
-        camBtn.addEventListener('click', () => {
-            initCamera();
-        });
-
-        function showNoUsers() {
-            statusDiv.textContent = 'אין משתמשים מחוברים';
-            remotePlaceholder.style.display = 'flex';
-            remoteBox.classList.add('noise-bg');
-            remoteVideo.style.display = 'none';
-            remoteVideo.src = '';
+        // פונקציה לבדיקה האם יש משתמשים (כרגע מוגדר שאין משתמשים)
+        function searchForUser(actionName) {
+            statusDiv.textContent = actionName;
+            
+            // כאן הגדרנו שאין משתמשים מחוברים כרגע
+            setTimeout(() => {
+                statusDiv.textContent = 'אין משתמשים מחוברים';
+                remotePlaceholder.style.display = 'flex';
+                remoteBox.classList.add('noise-bg');
+                remoteVideo.style.display = 'none';
+                remoteVideo.src = '';
+            }, 800);
         }
 
-        startBtn.addEventListener('click', showNoUsers);
-        nextBtn.addEventListener('click', showNoUsers);
+        // לחיצה על התחל
+        startBtn.addEventListener('click', () => {
+            searchForUser('מחפש משתמש...');
+        });
 
+        // לחיצה על הבא
+        nextBtn.addEventListener('click', () => {
+            searchForUser('מחפש משתמש חדש...');
+        });
+
+        // לחיצה על הפסק
         stopBtn.addEventListener('click', () => {
             remotePlaceholder.style.display = 'flex';
             remoteBox.classList.add('noise-bg');
