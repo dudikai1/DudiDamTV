@@ -243,15 +243,17 @@ camBtn.addEventListener('click', startCamera);
         sendMsgBtn.addEventListener('click', sendMessage);
         msgInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
-        });
-   
-    const socket = io();
-    socket.on('update-user-count', (userCount) => {
-        const countSpan = document.getElementById('count');
-        if (countSpan) {
-            countSpan.textContent = userCount;
-        }
+        
     });
-</script>
+<script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('update-user-count', (userCount) => {
+            const countSpan = document.getElementById('count');
+            if (countSpan) {
+                countSpan.textContent = userCount;
+            }
+        });
+    </script>
 </body>
 </html>
