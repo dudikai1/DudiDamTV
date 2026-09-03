@@ -206,8 +206,7 @@
             }
         }
 
-        camBtn.addEventListner ? camBtn.addEventListener('click', startCamera) : camBtn.onclick = startCamera;
-
+camBtn.addEventListener('click', startCamera);
         function showNoUsers() {
             statusDiv.textContent = 'אין משתמשים מחוברים';
             remotePlaceholder.style.display = 'flex';
