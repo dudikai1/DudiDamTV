@@ -8,11 +8,13 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #121212; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
+        /* רקע שלג משותף */
         .noise-bg {
             background-color: #222;
             background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.15"/></svg>');
         }
 
+        /* עיצוב לוגו הטלוויזיה */
         .tv-logo-box {
             background-color: #ff8a65;
             width: 180px;
@@ -65,10 +67,28 @@
             border-radius: 50%;
         }
 
-        .tv-title-1 { color: #fff; font-size: 30px; font-weight: bold; font-family: monospace; letter-spacing: 1px; }
-        .tv-title-2 { color: #69f0ae; font-size: 32px; font-weight: bold; font-family: monospace; }
+        .tv-title-1 {
+            color: #fff;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
 
-        #main-app { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+        .tv-title-2 {
+            color: #69f0ae;
+            font-size: 32px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        #main-app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
+
         header { background-color: #1f1f1f; padding: 12px; text-align: center; font-size: 20px; font-weight: bold; color: #00e676; border-bottom: 2px solid #333; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
         .video-container { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #000; position: relative; padding: 10px; }
@@ -150,7 +170,7 @@
                     <!-- מסך האדם השני (שמאל) -->
                     <div class="video-box noise-bg" id="remoteBox">
                         <div id="remotePlaceholder">
-                            <div class="tv-logo-box">
+                            <div class="tv-logo-box" id="tvLogo">
                                 <div class="tv-buttons">
                                     <div class="tv-btn-dot"></div>
                                     <div class="tv-btn-dot"></div>
@@ -159,7 +179,7 @@
                                 <div class="tv-title-2">TV</div>
                             </div>
                         </div>
-                        <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+                        <video id="remoteVideo" autoplay playsinline style="position: relative; z-index: 6; display: none;"></video>
                     </div>
                 </div>
                 
@@ -178,8 +198,7 @@
         const nextBtn = document.getElementById('nextBtn');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
-        const remotePlaceholder = document.getElementById('remotePlaceholder');
-        const remoteBox = document.getElementById('remoteBox');
+        const tvLogo = document.getElementById('tvLogo');
         const statusDiv = document.getElementById('status');
         let localStream = null;
 
@@ -195,36 +214,23 @@
             }
         });
 
-        // פונקציה לבדיקה האם יש משתמשים (כרגע מוגדר שאין משתמשים)
-        function searchForUser(actionName) {
-            statusDiv.textContent = actionName;
-            
-            // כאן הגדרנו שאין משתמשים מחוברים כרגע
-            setTimeout(() => {
-                statusDiv.textContent = 'אין משתמשים מחוברים';
-                remotePlaceholder.style.display = 'flex';
-                remoteBox.classList.add('noise-bg');
-                remoteVideo.style.display = 'none';
-                remoteVideo.src = '';
-            }, 800);
-        }
-
-        // לחיצה על התחל
+        // לחיצה על התחל - מעלימה רק את הלוגו, אבל השלג נשאר ברקע
         startBtn.addEventListener('click', () => {
-            searchForUser('מחפש משתמש...');
+            statusDiv.textContent = 'מחפש משתמש...';
+            tvLogo.style.display = 'none'; // מעלים את הלוגו אבל השלג נשאר
         });
 
-        // לחיצה על הבא
+        // לחיצה על הבא - השלג נשאר והלוגו מוסתר
         nextBtn.addEventListener('click', () => {
-            searchForUser('מחפש משתמש חדש...');
+            statusDiv.textContent = 'מחפש משתמש חדש...';
+            tvLogo.style.display = 'none'; // מעלים את הלוגו אבל השלג נשאר
         });
 
-        // לחיצה על הפסק
+        // לחיצה על הפסק - מחזירה את הלוגו למסך יחד עם השלג
         stopBtn.addEventListener('click', () => {
-            remotePlaceholder.style.display = 'flex';
-            remoteBox.classList.add('noise-bg');
+            tvLogo.style.display = 'flex'; // מחזיר את הלוגו
             remoteVideo.style.display = 'none';
-            remoteVideo.src = '';
+            remoteVideo.srcObject = null;
             statusDiv.textContent = 'הופסק';
         });
 
