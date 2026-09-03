@@ -6,7 +6,7 @@
     <title>DudiDamTV</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #121212; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { background-color: #121212; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
         /* רקע שלג משותף */
         .noise-bg {
@@ -123,11 +123,12 @@
             z-index: 5;
         }
 
-        .controls { margin-top: 15px; display: flex; gap: 15px; }
+        .controls { margin-top: 15px; display: flex; gap: 15px; align-items: center; }
         button { padding: 10px 22px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-start { background-color: #00e676; color: #000; }
         .btn-next { background-color: #ff9800; color: #000; }
         .btn-stop { background-color: #f44336; color: #fff; }
+        .btn-ban-test { background-color: #9c27b0; color: #fff; font-size: 14px; padding: 8px 12px; }
         
         .chat-container { flex: 1; background-color: #1e1e1e; display: flex; flex-direction: column; border-right: 2px solid #333; }
         .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -138,6 +139,52 @@
         .chat-input button { background-color: #00e676; color: #000; }
         #status { position: absolute; top: 15px; background: rgba(0, 0, 0, 0.7); padding: 6px 14px; border-radius: 20px; font-size: 13px; z-index: 10; }
 
+        /* מסך באן מלא שחוסם את הכל */
+        #banModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .ban-box {
+            background-color: #1f1f1f;
+            border: 3px solid #f44336;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(244, 67, 54, 0.4);
+        }
+
+        .ban-box h2 { color: #f44336; font-size: 28px; margin-bottom: 15px; }
+        .ban-box p { color: #ccc; font-size: 16px; margin-bottom: 20px; line-height: 1.5; }
+        
+        .paypal-btn {
+            background-color: #0070ba;
+            color: white;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .paypal-btn:hover { background-color: #005ea6; }
+
         @media (max-width: 768px) {
             .main-container { flex-direction: column-reverse; }
             .chat-container { height: 35%; border-right: none; border-top: 2px solid #333; }
@@ -146,6 +193,18 @@
     </style>
 </head>
 <body>
+
+    <!-- מסך הבאן (מוסתר כברירת מחדל) -->
+    <div id="banModal">
+        <div class="ban-box">
+            <h2>קיבלת באן לצמיתות! 🚨</h2>
+            <p>החשבון/הכתובת שלך חסומים עקב הפרת תנאי השימוש (הצגת תוכן אסור, אצבע שלישית או עירום).</p>
+            <p>רוצה להסיר את הבאן ולחזור לאתר? יש לבצע תשלום חד-פעמי לשחרור.</p>
+            <button class="paypal-btn" id="payPalBtn">
+                שחרר באן דרך PayPal (10.00 ₪)
+            </button>
+        </div>
+    </div>
 
     <div id="main-app">
         <header>DudiDamTV</header>
@@ -186,6 +245,8 @@
                     <button class="btn-stop" id="stopBtn">הפסק</button>
                     <button class="btn-next" id="nextBtn">הבא</button>
                     <button class="btn-start" id="startBtn">התחל</button>
+                    <!-- כפתור לבדיקה שפותח את מסך הבאן -->
+                    <button class="btn-ban-test" id="banTestBtn">בדיקת באן 🛑</button>
                 </div>
             </div>
         </div>
@@ -199,6 +260,9 @@
         const remoteVideo = document.getElementById('remoteVideo');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
         const statusDiv = document.getElementById('status');
+        const banModal = document.getElementById('banModal');
+        const banTestBtn = document.getElementById('banTestBtn');
+        const payPalBtn = document.getElementById('payPalBtn');
         let localStream = null;
 
         window.addEventListener('load', async () => {
@@ -228,8 +292,19 @@
 
         nextBtn.addEventListener('click', () => {
             statusDiv.textContent = 'מחפש משתמש חדש...';
-            remotePlaceholder.style.display = 'flex';
+            remotePlaceholder.style.display, remotePlaceholder.style.display = 'flex';
             remoteVideo.style.display = 'none';
+        });
+
+        // כפתור לדוגמה שמדמה קבלת באן
+        banTestBtn.addEventListener('click', () => {
+            banModal.style.display = 'flex';
+        });
+
+        // לחיצה על כפתור התשלום של פייפאל (כאילו שילם והבאן ירד)
+        payPalBtn.addEventListener('click', () => {
+            alert('התשלום בוצע בהצלחה דרך PayPal! הבאן הוסר.');
+            banModal.style.display = 'none';
         });
 
         const sendMsgBtn = document.getElementById('sendMsgBtn');
