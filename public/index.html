@@ -159,8 +159,7 @@
                                 <div class="tv-title-2">TV</div>
                             </div>
                         </div>
-                        <!-- וידאו הדמיה של בן אדם שיופיע כשלוחצים התחל/הבא -->
-                        <video id="remoteVideo" autoplay playsinline loop muted style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+                        <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
                     </div>
                 </div>
                 
@@ -196,38 +195,36 @@
             }
         });
 
-        // פונקציה שמדמה מציאת משתמש (מציגה סרטון של בן אדם ומעלימה את הלוגו והשלג)
-        function connectToUser() {
-            statusDiv.textContent = 'מחובר למשתמש!';
-            remotePlaceholder.style.display = 'none'; // מעלים לגמרי את מסך הלוגו והשלג
-            remoteBox.classList.remove('noise-bg'); // מסיר את רקע השלג
+        // פונקציה לבדיקה האם יש משתמשים (כרגע מוגדר שאין משתמשים)
+        function searchForUser(actionName) {
+            statusDiv.textContent = actionName;
             
-            // מציג סרטון הדמיה של מישהו (אפשר להחליף את הקישור בהמשך)
-            remoteVideo.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
-            remoteVideo.style.display = 'block';
+            // כאן הגדרנו שאין משתמשים מחוברים כרגע
+            setTimeout(() => {
+                statusDiv.textContent = 'אין משתמשים מחוברים';
+                remotePlaceholder.style.display = 'flex';
+                remoteBox.classList.add('noise-bg');
+                remoteVideo.style.display = 'none';
+                remoteVideo.src = '';
+            }, 800);
         }
 
-        // לחיצה על התחל - מעיפה את מסך הלוגו ומביאה בן אדם
+        // לחיצה על התחל
         startBtn.addEventListener('click', () => {
-            statusDiv.textContent = 'מחפש משתמש...';
-            setTimeout(connectToUser, 600); // השהייה קטנה כאילו הוא מחפש
+            searchForUser('מחפש משתמש...');
         });
 
-        // לחיצה על הבא - מחליפה מיד ומביאה בן אדם חדש
+        // לחיצה על הבא
         nextBtn.addEventListener('click', () => {
-            statusDiv.textContent = 'מחפש משתמש חדש...';
-            remoteVideo.style.display = 'none';
+            searchForUser('מחפש משתמש חדש...');
+        });
+
+        // לחיצה על הפסק
+        stopBtn.addEventListener('click', () => {
             remotePlaceholder.style.display = 'flex';
             remoteBox.classList.add('noise-bg');
-            setTimeout(connectToUser, 600);
-        });
-
-        // לחיצה על הפסק - מחזירה בחזרה את מסך הלוגו והשלג
-        stopBtn.addEventListener('click', () => {
             remoteVideo.style.display = 'none';
             remoteVideo.src = '';
-            remotePlaceholder.style.display = 'flex';
-            remoteBox.classList.add('noise-bg'); // מחזיר את השלג והלוגו
             statusDiv.textContent = 'הופסק';
         });
 
