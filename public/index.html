@@ -8,7 +8,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #121212; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* מסך הבית / לובי */
         #home-screen {
             position: fixed;
             top: 0;
@@ -39,7 +38,6 @@
             margin-bottom: 30px;
         }
 
-        /* אנטנות של הטלוויזיה */
         .tv-logo-box::before {
             content: '';
             position: absolute;
@@ -63,7 +61,6 @@
             border-radius: 2px;
         }
 
-        /* כפתורים בצד הטלוויזיה */
         .tv-buttons {
             position: absolute;
             right: 12px;
@@ -112,7 +109,6 @@
             background-color: #00c853;
         }
 
-        /* האתר הראשי (מוסתר בהתחלה) */
         #main-app {
             display: none;
             flex-direction: column;
@@ -137,11 +133,16 @@
         .chat-input input { flex: 1; padding: 10px; border: none; border-radius: 5px; background-color: #333; color: #fff; margin-left: 10px; }
         .chat-input button { background-color: #00e676; color: #000; }
         #status { position: absolute; top: 20px; background: rgba(0, 0, 0, 0.7); padding: 8px 16px; border-radius: 20px; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column-reverse; }
+            .chat-container { height: 35%; border-right: none; border-top: 2px solid #333; }
+            .video-container { height: 65%; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- מסך פתיחה עם הלוגו של הטלוויזיה -->
     <div id="home-screen">
         <div class="tv-logo-box">
             <div class="tv-buttons">
@@ -154,7 +155,6 @@
         <button class="start-chat-btn" id="enterBtn">התחל שיחה</button>
     </div>
 
-    <!-- האתר הראשי -->
     <div id="main-app">
         <header>DudiDamTV</header>
         <div class="main-container">
@@ -169,7 +169,7 @@
             </div>
 
             <div class="video-container">
-                <div id="status">לחץ על "התחל" כדי להפעיל מצלמה</div>
+                <div id="status">ממתין להפעלה...</div>
                 <div class="videos">
                     <video id="localVideo" autoplay playsinline muted></video>
                     <video id="remoteVideo" autoplay playsinline></video>
@@ -184,7 +184,6 @@
     </div>
 
     <script>
-        // מעבר ממסך הפתיחה לאתר הראשי והפעלת מצלמה אוטומטית
         const enterBtn = document.getElementById('enterBtn');
         const homeScreen = document.getElementById('home-screen');
         const mainApp = document.getElementById('main-app');
@@ -199,7 +198,6 @@
             homeScreen.style.display = 'none';
             mainApp.style.display = 'flex';
 
-            // הפעלה אוטומטית של המצלמה כשנכנסים
             try {
                 statusDiv.textContent = 'מפעיל מצלמה...';
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -231,7 +229,6 @@
             }
         });
 
-        // צ'אט
         const sendMsgBtn = document.getElementById('sendMsgBtn');
         const msgInput = document.getElementById('msgInput');
         const messagesContainer = document.querySelector('.messages');
