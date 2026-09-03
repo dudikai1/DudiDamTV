@@ -39,37 +39,52 @@
             height: 100%;
         }
         .controls {
-            margin-top: 30px;
+            margin-top: 25px;
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
             align-items: center;
         }
         .btn-start {
             background-color: #0b3d20;
             color: #fff;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
+            padding: 20px 40px;
             border: none;
             border-radius: 16px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            width: 220px;
-            height: 140px;
+            width: 180px;
+            height: 120px;
+        }
+        .btn-next {
+            background-color: #ff9800;
+            color: #000;
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 180px;
+            height: 120px;
         }
         .btn-stop {
             background-color: #4a2522;
             color: #fff;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
+            padding: 20px 40px;
             border: none;
             border-radius: 16px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            width: 220px;
-            height: 140px;
+            width: 180px;
+            height: 120px;
         }
-        .btn-start:hover, .btn-stop:hover {
+        .btn-start:hover, .btn-next:hover, .btn-stop:hover {
             opacity: 0.9;
             transform: scale(1.02);
         }
@@ -91,12 +106,14 @@
 
     <div class="controls">
         <button id="startBtn" class="btn-start">התחל</button>
+        <button id="nextBtn" class="btn-next">הבא</button>
         <button id="stopBtn" class="btn-stop">עצור</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const startBtn = document.getElementById('startBtn');
+        const nextBtn = document.getElementById('nextBtn');
         const stopBtn = document.getElementById('stopBtn');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
         const remoteVideo = document.getElementById('remoteVideo');
@@ -122,6 +139,7 @@
         }
 
         if (startBtn) startBtn.addEventListener('click', startSearch);
+        if (nextBtn) nextBtn.addEventListener('click', startSearch);
 
         if (stopBtn) {
             stopBtn.addEventListener('click', () => {
