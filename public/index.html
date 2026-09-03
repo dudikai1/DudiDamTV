@@ -8,11 +8,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #121212; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        .noise-bg {
-            background-color: #222;
-            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.15"/></svg>');
-        }
-
         .tv-logo-box {
             background-color: #ff8a65;
             width: 180px;
@@ -101,6 +96,7 @@
             align-items: center;
             justify-content: center;
             z-index: 5;
+            background-color: #181818;
         }
 
         .controls { margin-top: 15px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
@@ -150,7 +146,7 @@
                     </div>
 
                     <!-- מסך טלוויזיה / משתמש שני (ימין) -->
-                    <div class="video-box noise-bg" id="remoteBox">
+                    <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
                                 <div class="tv-buttons">
@@ -189,35 +185,23 @@
         async function startCamera() {
             try {
                 statusDiv.textContent = 'מבקש גישה למצלמה...';
-                
-                const constraints = {
-                    video: true,
-                    audio: true
-                };
-
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = stream;
-                
-                // מוודא שהווידאו מתנגן פיזית
-                await localVideo.play().catch(e => console.log("Play interrupted:", e));
-                
+                await localVideo.play();
                 statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
             } catch (error) {
-                console.error('Camera error details:', error);
-                statusDiv.textContent = 'שגיאה: אישור מצלמה נדחה או שהיא בשימוש';
-                alert('לא הצלחנו לגשת למצלמה. ודא שאישרת הרשאה בדפדפן ושאין אפליקציה אחרת (כמו דיסקורד) שתופסת אותה.');
+                console.error('Camera error:', error);
+                statusDiv.textContent = 'שגיאה בגישה למצלמה';
+                alert('ודא שאישרת הרשאה למצלמה בדפדפן ושאין אפליקציה אחרת שמשתמשת בה.');
             }
         }
 
-        // הפעלה אך ורק בלחיצה על הכפתור כדי לעקוף חסימות אוטומטיות של דפדפנים
         camBtn.addEventListener('click', startCamera);
 
         function showNoUsers() {
             statusDiv.textContent = 'אין משתמשים מחוברים';
             remotePlaceholder.style.display = 'flex';
-            remoteBox.classList.add('noise-bg');
             remoteVideo.style.display = 'none';
-            remoteVideo.src = '';
         }
 
         startBtn.addEventListener('click', showNoUsers);
@@ -225,9 +209,7 @@
 
         stopBtn.addEventListener('click', () => {
             remotePlaceholder.style.display = 'flex';
-            remoteBox.classList.add('noise-bg');
             remoteVideo.style.display = 'none';
-            remoteVideo.src = '';
             statusDiv.textContent = 'הופסק';
         });
 
