@@ -32,7 +32,29 @@
     </style>
 </head>
 <body>
+<script>
+    const sendBtn = document.querySelector('.chat-input button');
+    const inputField = document.querySelector('.chat-input input');
+    const messagesContainer = document.querySelector('.messages');
 
+    sendBtn.addEventListener('click', () => {
+        const text = inputField.value.trim();
+        if (text !== '') {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message self';
+            msgDiv.textContent = text;
+            messagesContainer.appendChild(msgDiv);
+            inputField.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    });
+
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+</script>
     <header>DudiDamTV</header>
 
     <div class="main-container">
