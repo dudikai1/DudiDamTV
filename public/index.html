@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DudiDamTV - צ'אט וידאו אקראי</title><meta name="description" content="האתר הרשמי של DudiDamTV - צ'אט וידאו בלייב לדבר ולפגוש אנשים.">
-
-        
-    <style> .video-container {
-    background: #111 url('https://i.imgur.com/q6Y8q8q.png') repeat !important;
-    background-size: 200px !important;}
-    </style>
-
-         box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    <title>DudiDamTV - צ'אט וידאו אקראי</title>
+    <meta name="description" content="האתר הרשמי DudiDamTV - צ'אט וידאו בלייב לדבר ולפגוש אנשים">
+    <meta name="keywords" content="DudiDamTV, DudiDam, אומגל, צ'אט וידאו">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #121212; color: #fff; display: flex; flex-direction: column; height: 100vh; }
         header { background-color: #1f1f1f; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; color: #00e676; border-bottom: 2px solid #333; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
@@ -35,128 +32,35 @@
     </style>
 </head>
 <body>
+
     <header>DudiDamTV</header>
+
     <div class="main-container">
+        <!-- אזור הצ'אט -->
+        <div class="chat-container">
+            <div class="messages">
+                <div class="message">ברוך הבא ל-DudiDamTV!</div>
+            </div>
+            <div class="chat-input">
+                <button>שלח</button>
+                <input type="text" placeholder="רשום הודעה...">
+            </div>
+        </div>
+
+        <!-- אזור הוידאו -->
         <div class="video-container">
             <div id="status">לחץ על "התחל" כדי לחפש פרטנר</div>
             <div class="videos">
-                <video id="localVideo" autoplay playsinline muted></video>
-                <video id="remoteVideo" autoplay playsinline></video>
+                <video autoplay playsinline muted></video>
+                <video autoplay playsinline></video>
             </div>
             <div class="controls">
-                <button class="btn-start" onclick="startSearch()">התחל</button>
-                <button class="btn-next" onclick="nextPartner()">הבא</button>
-                <button class="btn-stop" onclick="stopSearch()">פסק</button>
-            </div>
-        </div>
-        <div class="chat-container">
-            <div class="messages" id="messages"></div>
-            <div class="chat-input">
-                <input type="text" id="msgInput" placeholder="רשום הודעה..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button onclick="sendMessage()">שלח</button>
+                <button class="btn-stop">פסק</button>
+                <button class="btn-next">הבא</button>
+                <button class="btn-start">התחל</button>
             </div>
         </div>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-        let localStream, peerConnection;
-        const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-        const localVideo = document.getElementById('localVideo');
-        const remoteVideo = document.getElementById('remoteVideo');
-        const statusDiv = document.getElementById('status');
-        const messagesDiv = document.getElementById('messages');
-        const msgInput = document.getElementById('msgInput');
 
-        async function initCamera() {
-            if (!localStream) {
-                try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                    localVideo.srcObject = localStream;
-                } catch (e) {
-                    alert('יש לאשר גישה למצלמה ולמיקרופון');
-                }
-            }
-        }
-
-        async function startSearch() {
-            await initCamera();
-            statusDiv.innerText = 'מחפש פרטנר...';
-            socket.emit('find-partner');
-        }
-
-        function nextPartner() {
-            if (peerConnection) peerConnection.close();
-            remoteVideo.srcObject = null;
-            startSearch();
-        }
-
-        function stopSearch() {
-            if (peerConnection) peerConnection.close();
-            remoteVideo.srcObject = null;
-            statusDiv.innerText = 'החיפוש הופסק';
-        }
-
-        socket.on('waiting', () => { statusDiv.innerText = 'ממתין למישהו שישתבר...'; });
-
-        socket.on('peer-found', async ({ initiator }) => {
-            statusDiv.innerText = 'מחובר לפרטנר!';
-            createPeerConnection();
-            if (initiator) {
-                const offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-                socket.emit('signal', { offer });
-            }
-        });
-
-        socket.on('signal', async (data) => {
-            if (data.offer) {
-                createPeerConnection();
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-                socket.emit('signal', { answer });
-            } else if (data.answer) {
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-            } else if (data.candidate) {
-                await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-            }
-        });
-
-        function createPeerConnection() {
-            peerConnection = new RTCPeerConnection(config);
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-            peerConnection.ontrack = (event) => { remoteVideo.srcObject = event.streams[0]; };
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) socket.emit('signal', { candidate: event.candidate });
-            };
-        }
-
-        function sendMessage() {
-            const text = msgInput.value.trim();
-            if (text) {
-                addMessage(text, true);
-                socket.emit('send-message', text);
-                msgInput.value = '';
-            }
-        }
-
-        socket.on('receive-message', (msg) => { addMessage(msg, false); });
-
-        socket.on('partner-disconnected', () => {
-            statusDiv.innerText = 'הפרטנר התנתק. מחפש חדש...';
-            if (peerConnection) peerConnection.close();
-            remoteVideo.srcObject = null;
-            setTimeout(startSearch, 2000);
-        });
-
-        function addMessage(text, isSelf) {
-            const msgEl = document.createElement('div');
-            msgEl.className = `message ${isSelf ? 'self' : ''}`;
-            msgEl.innerText = text;
-            messagesDiv.appendChild(msgEl);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-    </script>
 </body>
 </html>
