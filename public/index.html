@@ -245,5 +245,15 @@ camBtn.addEventListener('click', startCamera);
             if (e.key === 'Enter') sendMessage();
         });
     </script>
+    <script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('update-user-count', (userCount) => {
+        const countSpan = document.getElementById('count');
+        if (countSpan) {
+            countSpan.textContent = userCount;
+        }
+    });
+</script>
 </body>
 </html>
