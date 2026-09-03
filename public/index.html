@@ -144,7 +144,12 @@
             <div class="video-container">
                 <div id="status">לחץ על "הפעל מצלמה" כדי להתחיל</div>
                 <div class="videos">
-                    <!-- מסך האדם השני (שמאל) עם השלג והלוגו -->
+                    <!-- המצלמה שלך (שמאל) -->
+                    <div class="video-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
+
+                    <!-- מסך הטלוויזיה / האדם השני (ימין) -->
                     <div class="video-box noise-bg" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -157,11 +162,6 @@
                             </div>
                         </div>
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
-                    </div>
-
-                    <!-- המצלמה שלך (ימין) -->
-                    <div class="video-box">
-                        <video id="localVideo" autoplay playsinline muted></video>
                     </div>
                 </div>
                 
@@ -199,12 +199,10 @@
             }
         }
 
-        // הפעלה אוטומטית בעליית הדף
         window.addEventListener('load', () => {
             initCamera();
         });
 
-        // כפתור ידני להפעלת המצלמה
         camBtn.addEventListener('click', () => {
             initCamera();
         });
