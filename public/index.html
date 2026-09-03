@@ -126,3 +126,131 @@
         }
     </style>
 </head>
+<body>
+
+    <div id="main-app">
+        <header>DudiDamTV</header>
+        <div class="main-container">
+            <div class="chat-container">
+                <div class="messages">
+                    <div class="message">ברוך הבא ל-DudiDamTV!</div>
+                </div>
+                <div class="chat-input">
+                    <button id="sendMsgBtn">שלח</button>
+                    <input type="text" id="msgInput" placeholder="רשום הודעה...">
+                </div>
+            </div>
+
+            <div class="video-container">
+                <div id="status">לחץ על "הפעל מצלמה"</div>
+                <div class="videos">
+                    <!-- המצלמה שלך (שמאל) -->
+                    <div class="video-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
+
+                    <!-- מסך טלוויזיה / משתמש שני (ימין) -->
+                    <div class="video-box noise-bg" id="remoteBox">
+                        <div id="remotePlaceholder">
+                            <div class="tv-logo-box">
+                                <div class="tv-buttons">
+                                    <div class="tv-btn-dot"></div>
+                                    <div class="tv-btn-dot"></div>
+                                </div>
+                                <div class="tv-title-1">DudiDam</div>
+                                <div class="tv-title-2">TV</div>
+                            </div>
+                        </div>
+                        <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn-cam" id="camBtn">הפעל מצלמה</button>
+                    <button class="btn-stop" id="stopBtn">הפסק</button>
+                    <button class="btn-next" id="nextBtn">הבא</button>
+                    <button class="btn-start" id="startBtn">התחל</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const camBtn = document.getElementById('camBtn');
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const remotePlaceholder = document.getElementById('remotePlaceholder');
+        const remoteBox = document.getElementById('remoteBox');
+        const statusDiv = document.getElementById('status');
+
+        async function startCamera() {
+            try {
+                statusDiv.textContent = 'מבקש גישה למצלמה...';
+                
+                const constraints = {
+                    video: true,
+                    audio: true
+                };
+
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                localVideo.srcObject = stream;
+                
+                // מוודא שהווידאו מתנגן פיזית
+                await localVideo.play().catch(e => console.log("Play interrupted:", e));
+                
+                statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
+            } catch (error) {
+                console.error('Camera error details:', error);
+                statusDiv.textContent = 'שגיאה: אישור מצלמה נדחה או שהיא בשימוש';
+                alert('לא הצלחנו לגשת למצלמה. ודא שאישרת הרשאה בדפדפן ושאין אפליקציה אחרת (כמו דיסקורד) שתופסת אותה.');
+            }
+        }
+
+        // הפעלה אך ורק בלחיצה על הכפתור כדי לעקוף חסימות אוטומטיות של דפדפנים
+        camBtn.addEventListener('click', startCamera);
+
+        function showNoUsers() {
+            statusDiv.textContent = 'אין משתמשים מחוברים';
+            remotePlaceholder.style.display = 'flex';
+            remoteBox.classList.add('noise-bg');
+            remoteVideo.style.display = 'none';
+            remoteVideo.src = '';
+        }
+
+        startBtn.addEventListener('click', showNoUsers);
+        nextBtn.addEventListener('click', showNoUsers);
+
+        stopBtn.addEventListener('click', () => {
+            remotePlaceholder.style.display = 'flex';
+            remoteBox.classList.add('noise-bg');
+            remoteVideo.style.display = 'none';
+            remoteVideo.src = '';
+            statusDiv.textContent = 'הופסק';
+        });
+
+        const sendMsgBtn = document.getElementById('sendMsgBtn');
+        const msgInput = document.getElementById('msgInput');
+        const messagesContainer = document.querySelector('.messages');
+
+        const sendMessage = () => {
+            const text = msgInput.value.trim();
+            if (text !== '') {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message self';
+                msgDiv.textContent = text;
+                messagesContainer.appendChild(msgDiv);
+                msgInput.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        };
+
+        sendMsgBtn.addEventListener('click', sendMessage);
+        msgInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
