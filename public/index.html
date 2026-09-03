@@ -3,31 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DudiDamTV</title>
+    <title>DudiDamTV - Video Chat</title>
     <style>
         body {
             margin: 0;
-            background-color: #181818;
+            background-color: #121212;
             color: #fff;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
         }
-        .main-wrapper {
+
+        /* Header styling */
+        header {
+            width: 100%;
+            background-color: #1a1a1a;
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            color: #00c853; /* Green header text */
+            font-size: 24px;
+        }
+
+        .user-count {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* Main content layout */
+        .main-container {
             display: flex;
-            flex-direction: row;
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
             gap: 20px;
             justify-content: center;
-            align-items: flex-start;
         }
-        .tv-container {
-            position: relative;
-            width: 800px;
-            max-width: 80vw;
-            height: 450px;
+
+        /* Video sections */
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 4 / 3; /* Keeps video at a 4:3 ratio */
             background-color: #000;
             border-radius: 12px;
             overflow: hidden;
@@ -35,224 +72,300 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid #333;
         }
-        #remotePlaceholder {
-            font-size: 24px;
-            color: #888;
+
+        #localVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Hidden until camera is active */
+        }
+
+        .logo-placeholder {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            height: 100%;
+            color: #555;
+            font-size: 20px;
             text-align: center;
         }
-        #remotePlaceholder img {
-            margin-bottom: 15px;
-            max-width: 100px;
+
+        .logo-placeholder img {
+            width: 100px;
+            margin-bottom: 10px;
         }
-        #remoteVideo {
-            display: none; 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover;
+
+        .searching-text {
+            font-size: 16px;
+            color: #aaa;
+            margin-top: 10px;
+            min-height: 20px; /* Keeps space reserved even if empty */
         }
-        .chat-container {
+
+        /* Chat section */
+        .chat-section {
             width: 300px;
-            background-color: #212121;
+            background-color: #1a1a1a;
             border-radius: 12px;
             padding: 15px;
-            height: 450px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 1px solid #333;
         }
+
         .chat-header {
             font-weight: bold;
             margin-bottom: 10px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
+            color: #aaa;
         }
-        #messages {
+
+        #chat-messages {
             flex: 1;
             overflow-y: auto;
             font-size: 14px;
             color: #ccc;
+            padding-right: 5px;
         }
-        .chat-input-area {
+
+        #chat-input {
             display: flex;
             gap: 5px;
             margin-top: 10px;
         }
-        #msgInput {
+
+        input[type="text"] {
             flex: 1;
             padding: 8px;
             border-radius: 6px;
             border: 1px solid #444;
             background-color: #333;
             color: #fff;
+            outline: none;
         }
-        #sendMsgBtn {
-            padding: 8px 12px;
+
+        button#send-btn {
+            padding: 8px 15px;
             border-radius: 6px;
             border: none;
             background-color: #00c853;
             color: #fff;
+            font-weight: bold;
             cursor: pointer;
         }
-        .controls {
-            margin-top: 30px;
+
+        /* Control buttons styling (The important part!) */
+        .controls-container {
             display: flex;
             gap: 30px;
             justify-content: center;
-            align-items: center;
+            margin: 30px 0;
+            width: 100%;
         }
-        .btn-start {
-            background-color: #0b3d20;
-            color: #fff;
-            font-size: 36px;
+
+        .ctrl-btn {
+            font-size: 28px;
             font-weight: bold;
-            padding: 30px 50px;
+            padding: 25px 45px;
             border: none;
             border-radius: 16px;
             cursor: pointer;
             box-shadow: 0 6px 10px rgba(0,0,0,0.4);
-            width: 240px;
-            height: 150px;
             transition: transform 0.1s, box-shadow 0.1s;
+            width: 200px;
+            height: 110px;
         }
-        .btn-stop {
-            background-color: #4a2522;
-            color: #fff;
-            font-size: 36px;
-            font-weight: bold;
-            padding: 30px 50px;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.4);
-            width: 240px;
-            height: 150px;
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
-        .btn-start:active, .btn-stop:active {
+
+        .ctrl-btn:active {
             transform: translateY(2px);
             box-shadow: 0 3px 6px rgba(0,0,0,0.4);
         }
-        #status {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #aaa;
-            font-weight: bold;
+
+        #start-btn {
+            background-color: #0b3d20; /* Dark green */
+            color: #fff;
         }
+
+        #next-btn {
+            background-color: #ff9800; /* Bright orange */
+            color: #000;
+        }
+
+        #stop-btn {
+            background-color: #4a2522; /* Dark reddish-brown */
+            color: #fff;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <div class="tv-container">
-            <div id="remotePlaceholder">
-                <img src="https://i.ibb.co/xYm813k/dudidam-tv-logo.png" alt="DudiDamTV Logo">
-                לחץ על התחל כדי להתחיל
-            </div>
-            <video id="remoteVideo" autoplay playsinline></video>
-        </div>
+    <header>
+        <div class="user-count">משתמשים אונליין: <span id="count">0</span></div>
+        <h1>DudiDamTV</h1>
+    </header>
 
-        <div class="chat-container">
+    <div class="main-container">
+        <!-- Remote Video (Partner) -->
+        <section class="video-section">
+            <div class="video-wrapper">
+                <div id="remote-logo" class="logo-placeholder">
+                    <img src="https://i.ibb.co/xYm813k/dudidam-tv-logo.png" alt="DudiDamTV Logo">
+                    DudiDam TV
+                </div>
+                <video id="remoteVideo" autoplay playsinline></video>
+            </div>
+            <div id="status-text" class="searching-text">לחץ על התחל כדי להתחיל</div>
+        </section>
+
+        <!-- Chat Panel -->
+        <section class="chat-section">
             <div class="chat-header">צ'אט</div>
-            <div id="messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="msgInput" placeholder="כתוב הודעה...">
-                <button id="sendMsgBtn">שלח</button>
+            <div id="chat-messages">
+                <!-- Messages will appear here -->
             </div>
-        </div>
+            <div id="chat-input">
+                <input type="text" id="message-input" placeholder="כתוב הודעה...">
+                <button id="send-btn">שלח</button>
+            </div>
+        </section>
     </div>
 
-    <div id="status">מוכן</div>
-
-    <div class="controls">
-        <button id="startBtn" class="btn-start">התחל</button>
-        <button id="stopBtn" class="btn-stop">עצור</button>
+    <!-- Large Control Buttons -->
+    <div class="controls-container">
+        <button id="stop-btn" class="ctrl-btn">עצור</button>
+        <button id="next-btn" class="ctrl-btn">הבא</button>
+        <button id="start-btn" class="ctrl-btn">התחל</button>
     </div>
 
+    <!-- Socket.io client library -->
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const remotePlaceholder = document.getElementById('remotePlaceholder');
-        const remoteVideo = document.getElementById('remoteVideo');
-        const statusDiv = document.getElementById('status');
-        const msgInput = document.getElementById('msgInput');
-        const sendMsgBtn = document.getElementById('sendMsgBtn');
-        const messagesContainer = document.getElementById('messages');
-        let localStream = null;
 
+    <script>
+        // --- DOM Elements ---
+        const startBtn = document.getElementById('startBtn'); // Note: IDs in HTML are start-btn, not startBtn. Fixed below.
+        const startBtnFixed = document.getElementById('start-btn');
+        const nextBtnFixed = document.getElementById('next-btn');
+        const stopBtnFixed = document.getElementById('stop-btn');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const remoteLogo = document.getElementById('remote-logo');
+        const statusText = document.getElementById('status-text');
+        const countSpan = document.getElementById('count');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+
+        let localStream = null;
+        let peerConnection = null;
+
+        // --- Socket Connection ---
         const socket = io();
 
+        // --- Functions ---
+
+        // Function to handle "Start" and "Next" actions
         async function startSearch() {
             try {
-                if (!localStream) {
-                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                }
-                statusDiv.textContent = 'מחפש משתמש...';
-                remotePlaceholder.style.display = 'none';
-                remoteVideo.style.display = 'block';
-                // הדמה את הוידאו המרוחק עם הוידאו המקומי לבדיקה (תחליף את זה בזרם האמיתי מהשרת)
-                remoteVideo.srcObject = localStream; 
+                // 1. Request camera access
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 
+                // 2. Update UI
+                remoteLogo.style.display = 'none';
+                remoteVideo.style.display = 'block';
+                remoteVideo.srcObject = localStream; // Show self-view for testing
+                statusText.textContent = 'מחפש משתמש...';
+
+                // 3. Tell server we're looking for a partner
                 socket.emit('find-partner');
+
             } catch (err) {
                 console.error('שגיאה בגישה למצלמה:', err);
-                statusDiv.textContent = 'שגיאה בגישה למצלמה';
-                remotePlaceholder.innerHTML = '<span style="color:red;">שגיאה בגישה למצלמה. בדוק הרשאות.</span>';
+                statusText.textContent = 'שגיאה בגישה למצלמה. בדוק הרשאות.';
             }
         }
 
+        // Function to handle "Stop" action
         function stopSearch() {
+            // 1. Stop all camera tracks
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
                 localStream = null;
             }
-            if (remoteVideo) remoteVideo.pause();
+            // 2. Close PeerConnection if it exists
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            // 3. Update UI
+            remoteVideo.pause();
             remoteVideo.srcObject = null;
             remoteVideo.style.display = 'none';
-            remotePlaceholder.style.display = 'flex';
-            remotePlaceholder.innerHTML = '<img src="https://i.ibb.co/xYm813k/dudidam-tv-logo.png" alt="DudiDamTV Logo">לחץ על התחל כדי להתחיל';
-            statusDiv.textContent = 'הופסק';
+            remoteLogo.style.display = 'flex';
+            statusText.textContent = 'הופסק. לחץ על התחל כדי להתחיל.';
+            
+            // 4. Tell server we stopped searching
             socket.emit('stop-search');
         }
 
-        startBtn.addEventListener('click', startSearch);
-        stopBtn.addEventListener('click', stopSearch);
-
-        socket.on('update-user-count', (userCount) => {
-            // כאן אפשר להוסיף לוגיקה לעדכון מונה המשתמשים אם רוצים.
-        });
-
-        socket.on('new-message', (data) => {
-            const msgDiv = document.createElement('div');
-            msgDiv.textContent = `${data.username}: ${data.text}`;
-            messagesContainer.appendChild(msgDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        });
-
+        // Function to send chat message
         function sendMessage() {
-            const text = msgInput.value.trim();
+            const text = messageInput.value.trim();
             if (text) {
                 socket.emit('send-message', text);
+                // Add own message to chat
                 const msgDiv = document.createElement('div');
                 msgDiv.textContent = `אני: ${text}`;
                 msgDiv.style.color = '#00c853';
-                messagesContainer.appendChild(msgDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                msgInput.value = '';
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                messageInput.value = '';
             }
         }
 
-        sendMsgBtn.addEventListener('click', sendMessage);
-        msgInput.addEventListener('keypress', (e) => {
+        // --- Event Listeners ---
+        startBtnFixed.addEventListener('click', startSearch);
+        nextBtnFixed.addEventListener('click', startSearch); // "Next" does the same as "Start"
+        stopBtnFixed.addEventListener('click', stopSearch);
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
+
+        // --- Socket Event Handlers ---
+
+        // Update online user count
+        socket.on('update-user-count', (userCount) => {
+            countSpan.textContent = userCount;
+        });
+
+        // Receive new chat message
+        socket.on('new-message', (data) => {
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = `${data.username}: ${data.text}`;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+
+        // --- WebRTC Handlers (Advanced - Add these when ready for real connections) ---
+        /*
+        socket.on('partner-found', async () => {
+             statusText.textContent = 'משתמש נמצא! מתחבר...';
+             // Initialize WebRTC PeerConnection here
+        });
+        socket.on('offer', async (offer) => {
+            // Handle WebRTC offer
+        });
+        socket.on('answer', async (answer) => {
+            // Handle WebRTC answer
+        });
+        socket.on('candidate', async (candidate) => {
+            // Handle ICE candidate
+        });
+        */
+
     </script>
 </body>
 </html>
