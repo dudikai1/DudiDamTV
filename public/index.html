@@ -185,14 +185,24 @@
         async function startCamera() {
             try {
                 statusDiv.textContent = 'מבקש גישה למצלמה...';
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                
+                // שליפת רשימת התקני וידאו למניעת נפילות
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(d => d.kind === 'videoinput');
+                
+                let constraints = { video: true, audio: true };
+                if (videoDevices.length > 0) {
+                    constraints.video = { deviceId: { exact: videoDevices[0].deviceId } };
+                }
+
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = stream;
                 await localVideo.play();
                 statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
             } catch (error) {
                 console.error('Camera error:', error);
-                statusDiv.textContent = 'שגיאה בגישה למצלמה';
-                alert('ודא שאישרת הרשאה למצלמה בדפדפן ושאין אפליקציה אחרת שמשתמשת בה.');
+                statusDiv.textContent = 'שגיאה: מצלמה לא זמינה';
+                alert('הדפדפן נחסם. לחץ על כפתור איפוס ההרשאות ליד כתובת האתר, רענס את העמוד ונסה שוב.');
             }
         }
 
