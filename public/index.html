@@ -138,14 +138,12 @@
             </div>
 
             <div class="video-container">
-                <div id="status">לחץ על F12 ואז על הכפתור</div>
+                <div id="status">לחץ על "הפעל מצלמה"</div>
                 <div class="videos">
-                    <!-- המצלמה שלך (שמאל) -->
                     <div class="video-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
 
-                    <!-- מסך טלוויזיה / משתמש שני (ימין) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -161,7 +159,7 @@
                     </div>
                 </div>
                 
-                <div class="controls">
+                .controls {
                     <button class="btn-cam" id="camBtn">הפעל מצלמה</button>
                     <button class="btn-stop" id="stopBtn">הפסק</button>
                     <button class="btn-next" id="nextBtn">הבא</button>
@@ -184,29 +182,23 @@
         async function startCamera() {
             try {
                 statusDiv.textContent = 'מבקש גישה למצלמה...';
-                console.log("Requesting media devices...");
                 
+                // בקשה ישירה ופשוטה ביותר למצלמה ולמיקרופון
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: true, 
                     audio: true 
                 });
                 
-                console.log("Stream acquired successfully:", stream);
                 localVideo.srcObject = stream;
-                
-                // הכרחת הפעלה ידנית לוודא שהווידאו מתנגן במסך
-                await localVideo.play();
-                console.log("Local video is playing");
-                
                 statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
             } catch (error) {
-                console.error('Detailed Camera error:', error);
-                statusDiv.textContent = 'שגיאה: ' + error.name;
-                alert('שגיאת מצלמה: ' + error.message);
+                console.error('Camera error:', error);
+                statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
+                alert('הדפדפן חסם את המצלמה. לחץ על המנעול בשורת הכתובת למעלה, אפשר מצלמה ורענן את העמוד.');
             }
         }
 
-        camBtn.addEventListner ? camBtn.addEventListener('click', startCamera) : camBtn.onclick = startCamera;
+        camBtn.addEventListener('click', startCamera);
 
         function showNoUsers() {
             statusDiv.textContent = 'אין משתמשים מחוברים';
