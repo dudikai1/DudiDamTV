@@ -111,7 +111,6 @@
         video { width: 100%; height: 100%; object-fit: cover; background-color: #1a1a1a; }
         #localVideo { transform: scaleX(-1); }
 
-        /* הלוגו שיושב בתוך המסך השמאלי כשאין שיחה */
         #remotePlaceholder {
             position: absolute;
             top: 0;
@@ -202,30 +201,24 @@
         const statusDiv = document.getElementById('status');
         let localStream = null;
 
-        // הפעלה אוטומטית של המצלמה שלך ברגע שהדף נטען
         window.addEventListener('load', async () => {
             try {
                 statusDiv.textContent = 'מפעיל מצלמה...';
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
-                statusDiv.textContent = 'מחובר';
+                statusDiv.textContent = 'מחובר (מוכן להתחלה)';
             } catch (err) {
                 console.error(err);
                 statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
             }
         });
 
-        // כשתלחץ "התחל" - הלוגו יעלם ויראו את מסך האדם השני
-        startBtn.addEventListener('click', async () => {
-            statusDiv.textContent = 'מחובר לשיחה';
-            // מעלים את הלוגו ומציגים את הווידאו של הצד השני
-            remotePlaceholder.style.display = 'none';
-            remoteVideo.style.display = 'block';
-            
-            // (אם תרצה בעתיד לחבר כאן וידאו אמיתי של מישהו אחר, תכניס אותו ל-remoteVideo.srcObject)
+        startBtn.addEventListener('click', () => {
+            statusDiv.textContent = 'מחפש משתמש... (אין כרגע משתמשים אחרים)';
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
         });
 
-        // כשתלחץ "הפסק" - השיחה תיעצר והלוגו יחזור למסך השמאלי
         stopBtn.addEventListener('click', () => {
             remotePlaceholder.style.display = 'flex';
             remoteVideo.style.display = 'none';
@@ -233,18 +226,10 @@
             statusDiv.textContent = 'הופסק';
         });
 
-        // כשתלחץ "הבא" - הלוגו יופיע בזמן חיפוש ואז יציג את הבן אדם החדש
         nextBtn.addEventListener('click', () => {
             statusDiv.textContent = 'מחפש משתמש חדש...';
             remotePlaceholder.style.display = 'flex';
             remoteVideo.style.display = 'none';
-            
-            // הדמיה כאילו אחרי שנייה נמצא מישהו חדש והלוגו מתחלף חזרה לווידאו שלו:
-            setTimeout(() => {
-                statusDiv.textContent = 'מחובר לשיחה';
-                remotePlaceholder.style.display = 'none';
-                remoteVideo.style.display = 'block';
-            }, 1500);
         });
 
         const sendMsgBtn = document.getElementById('sendMsgBtn');
