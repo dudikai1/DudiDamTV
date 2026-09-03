@@ -78,7 +78,7 @@
             padding: 10px; 
         }
         
-        .videos { display: flex; width: 100%; height: 60%; gap: 10px; justify-content: center; align-items: center; }
+        .videos { display: flex; width: 100%; height: 62%; gap: 10px; justify-content: center; align-items: center; }
         
         .video-box {
             width: 48%;
@@ -109,37 +109,48 @@
             background-color: #181818;
         }
 
-        /* 4 Colorful Action Buttons Style matching image_217746.png */
+        /* Giant Custom Bottom Controls matching your exact screenshot colors and proportions */
         .controls { 
             margin-top: 15px; 
             display: flex; 
-            gap: 15px; 
+            gap: 25px; 
             align-items: center; 
             justify-content: center; 
             width: 100%;
         }
         
-        .btn-action {
-            padding: 12px 24px;
-            font-size: 16px;
+        .ctrl-giant-btn {
+            font-size: 42px;
             font-weight: bold;
             border: none;
-            border-radius: 8px;
+            border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
             transition: transform 0.1s, box-shadow 0.1s;
+            width: 280px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-action:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        .ctrl-giant-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         }
 
-        .btn-start { background-color: #00e676; color: #000; }
-        .btn-next { background-color: #ff9800; color: #000; }
-        .btn-stop { background-color: #f44336; color: #fff; }
-        .btn-cam { background-color: #2196F3; color: #fff; }
+        #startBtn { 
+            background-color: #133a27; /* Exact dark green from your screenshot */
+            color: #b0c4bc;            /* Exact muted light text from your screenshot */
+        }
+        
+        #stopBtn { 
+            background-color: #3b2826;  /* Exact dark brown/red from your screenshot */
+            color: #b8aaa7;            /* Exact muted light text from your screenshot */
+        }
 
+        .hidden-legacy-btns { display: none; }
+        
         .chat-container { flex: 1; background-color: #1e1e1e; display: flex; flex-direction: column; border-right: 2px solid #333; }
         .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .message { background-color: #333; padding: 8px 12px; border-radius: 5px; max-width: 80%; }
@@ -153,6 +164,7 @@
             .main-container { flex-direction: column-reverse; }
             .chat-container { height: 35%; border-right: none; border-top: 2px solid #333; }
             .video-container { height: 65%; }
+            .ctrl-giant-btn { width: 160px; height: 90px; font-size: 26px; }
         }
     </style>
 </head>
@@ -172,7 +184,7 @@
             </div>
 
             <div class="video-container">
-                <div id="status">לחץ על "הפעל מצלמה"</div>
+                <div id="status">לחץ על "התחל" כדי להפעיל מצלמה</div>
                 <div class="videos">
                     <!-- המצלמה שלך (שמאל) -->
                     <div class="video-box">
@@ -195,12 +207,15 @@
                     </div>
                 </div>
                 
-                <!-- 4 Action Buttons Bar matching image_217746.png layout -->
+                <!-- Giant Bottom Control Buttons matching the screenshot layout -->
                 <div class="controls">
-                    <button class="btn-action btn-start" id="startBtn">התחל</button>
-                    <button class="btn-action btn-next" id="nextBtn">הבא</button>
-                    <button class="btn-action btn-stop" id="stopBtn">הפסק</button>
-                    <button class="btn-action btn-cam" id="camBtn">הפעל מצלמה</button>
+                    <button class="ctrl-giant-btn" id="startBtn">התחל</button>
+                    <button class="ctrl-giant-btn" id="stopBtn">עצור</button>
+                </div>
+
+                <div class="hidden-legacy-btns">
+                    <button id="nextBtn"></button>
+                    <button id="camBtn"></button>
                 </div>
             </div>
         </div>
@@ -214,9 +229,10 @@
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
+        const remoteBox = document.getElementById('remoteBox');
         const statusDiv = document.getElementById('status');
 
-        async function startCamera() {
+        async function startCameraAndSearch() {
             try {
                 statusDiv.textContent = 'מבקש גישה למצלמה...';
                 
@@ -231,7 +247,7 @@
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = stream;
                 await localVideo.play();
-                statusDiv.textContent = 'המצלמה פועלת בהצלחה!';
+                statusDiv.textContent = 'מחפש משתמש...';
             } catch (error) {
                 console.error('Camera error:', error);
                 statusDiv.textContent = 'שגיאה: מצלמה לא זמינה';
@@ -239,18 +255,9 @@
             }
         }
 
-        camBtn.addEventListener('click', startCamera);
+        startBtn.addEventListener('click', startCameraAndSearch);
 
-        function showNoUsers() {
-            statusDiv.textContent = 'אין משתמשים מחוברים';
-            remotePlaceholder.style.display = 'flex';
-            remoteVideo.style.display = 'none';
-        }
-
-        startBtn.addEventListener('click', showNoUsers);
-        nextBtn.addEventListener('click', showNoUsers);
-
-        stopBtn.addEventListener('click', () => {
+        function stopSession() {
             remotePlaceholder.style.display = 'flex';
             remoteVideo.style.display = 'none';
             statusDiv.textContent = 'הופסק';
@@ -259,7 +266,11 @@
                 localVideo.srcObject.getTracks().forEach(track => track.stop());
                 localVideo.srcObject = null;
             }
-        });
+        }
+
+        stopBtn.addEventListener('click', stopSession);
+        if(nextBtn) nextBtn.addEventListener('click', startCameraAndSearch);
+        if(camBtn) camBtn.addEventListener('click', startCameraAndSearch);
 
         const sendMsgBtn = document.getElementById('sendMsgBtn');
         const msgInput = document.getElementById('msgInput');
