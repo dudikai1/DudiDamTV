@@ -102,7 +102,7 @@
         }
 
         .status-text {
-            margin: 15px 0;
+            margin: 10px 0;
             font-size: 16px;
             color: #aaa;
             text-align: center;
@@ -118,7 +118,7 @@
             display: flex;
             flex-direction: column;
             border: 1px solid #333;
-            height: 420px;
+            height: 450px;
         }
 
         .chat-header {
@@ -162,43 +162,48 @@
             cursor: pointer;
         }
 
-        /* Giant Bottom Controls matching the exact screenshot style */
+        /* Big Bottom Controls */
         .controls-container {
             display: flex;
-            gap: 40px;
+            gap: 25px;
             justify-content: center;
-            margin: 10px 0 40px 0;
+            margin: 20px 0 40px 0;
             width: 100%;
         }
 
         .ctrl-btn {
-            font-size: 42px;
+            font-size: 32px;
             font-weight: bold;
             border: none;
-            border-radius: 20px;
+            border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
             transition: transform 0.1s, box-shadow 0.1s;
-            width: 260px;
-            height: 160px;
+            width: 180px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .ctrl-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-        }
-
-        #start-btn {
-            background-color: #133a27; /* Exact dark green from your image */
-            color: #b0c4bc;            /* Light muted text color */
+            transform: translateY(2px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
         }
 
         #stop-btn {
-            background-color: #3b2826;  /* Exact dark brown/reddish from your image */
-            color: #b8aaa7;            /* Light muted text color */
+            background-color: #4a2522; /* Brown */
+            color: #fff;
+        }
+
+        #next-btn {
+            background-color: #ff9800; /* Orange */
+            color: #000;
+        }
+
+        #start-btn {
+            background-color: #0b3d20; /* Dark Green */
+            color: #fff;
         }
     </style>
 </head>
@@ -212,6 +217,7 @@
     <div class="main-container">
         <div class="left-content">
             <div class="videos-wrapper">
+                <!-- Local / Remote video boxes -->
                 <div class="video-box" id="box1">
                     <div class="logo-placeholder" id="placeholder1">
                         <img src="https://i.ibb.co/xYm813k/dudidam-tv-logo.png" alt="Logo">
@@ -230,10 +236,11 @@
 
             <div id="status-text" class="status-text">לחץ על התחל כדי להתחיל</div>
 
-            <!-- Giant Bottom Control Buttons -->
+            <!-- Big Control Buttons at the Bottom -->
             <div class="controls-container">
-                <button id="start-btn" class="ctrl-btn">התחל</button>
                 <button id="stop-btn" class="ctrl-btn">עצור</button>
+                <button id="next-btn" class="ctrl-btn">הבא</button>
+                <button id="start-btn" class="ctrl-btn">התחל</button>
             </div>
         </div>
 
@@ -251,6 +258,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
         const stopBtn = document.getElementById('stop-btn');
         const video2 = document.getElementById('video2');
         const placeholder2 = document.getElementById('placeholder2');
@@ -291,6 +299,7 @@
         }
 
         startBtn.addEventListener('click', startCamera);
+        nextBtn.addEventListener('click', startCamera);
         stopBtn.addEventListener('click', stopCamera);
 
         socket.on('update-user-count', (userCount) => {
