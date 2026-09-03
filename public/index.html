@@ -164,12 +164,10 @@
             <div class="video-container">
                 <div id="status">ממתין להפעלה...</div>
                 <div class="videos">
-                    <!-- מסך המצלמה שלך (ימין) -->
                     <div class="video-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
                     
-                    <!-- מסך האדם השני (שמאל) - עם הלוגו והשלג כברירת מחדל -->
                     <div class="video-box noise-bg" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -177,7 +175,7 @@
                                     <div class="tv-btn-dot"></div>
                                     <div class="tv-btn-dot"></div>
                                 </div>
-                                .tv-title-1>DudiDam</div>
+                                <div class="tv-title-1">DudiDam</div>
                                 <div class="tv-title-2">TV</div>
                             </div>
                         </div>
@@ -210,22 +208,24 @@
                 statusDiv.textContent = 'מפעיל מצלמה...';
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
-                statusDiv.textContent = 'מחובר (מוכן להתחלה)';
+                statusDiv.textContent = 'מחובר';
             } catch (err) {
                 console.error(err);
                 statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
             }
         });
 
-        // כשתלחץ "התחל" - כרגע אין אנשים, לכן הוא ישאר במצב חיפוש והלוגו יישאר במקום
-        startBtn.addEventListener('click', () => {
-            statusDiv.textContent = 'מחפש משתמש... (אין כרגע משתמשים אחרים)';
-            // מוודאים שהלוגו נשאר כי אין עדיין וידאו אמיתי של מישהו אחר
-            remotePlaceholder.style.display = 'flex';
-            remoteVideo.style.display = 'none';
+        // כשתלחץ "התחל" - הלוגו יעלם ויראו את מסך האדם השני
+        startBtn.addEventListener('click', async () => {
+            statusDiv.textContent = 'מחובר לשיחה';
+            // מעלים את הלוגו ומציגים את הווידאו של הצד השני
+            remotePlaceholder.style.display = 'none';
+            remoteVideo.style.display = 'block';
+            
+            // (אם תרצה בעתיד לחבר כאן וידאו אמיתי של מישהו אחר, תכניס אותו ל-remoteVideo.srcObject)
         });
 
-        // כשתלחץ "הפסק"
+        // כשתלחץ "הפסק" - השיחה תיעצר והלוגו יחזור למסך השמאלי
         stopBtn.addEventListener('click', () => {
             remotePlaceholder.style.display = 'flex';
             remoteVideo.style.display = 'none';
@@ -233,11 +233,18 @@
             statusDiv.textContent = 'הופסק';
         });
 
-        // כשתלחץ "הבא"
+        // כשתלחץ "הבא" - הלוגו יופיע בזמן חיפוש ואז יציג את הבן אדם החדש
         nextBtn.addEventListener('click', () => {
             statusDiv.textContent = 'מחפש משתמש חדש...';
             remotePlaceholder.style.display = 'flex';
             remoteVideo.style.display = 'none';
+            
+            // הדמיה כאילו אחרי שנייה נמצא מישהו חדש והלוגו מתחלף חזרה לווידאו שלו:
+            setTimeout(() => {
+                statusDiv.textContent = 'מחובר לשיחה';
+                remotePlaceholder.style.display = 'none';
+                remoteVideo.style.display = 'block';
+            }, 1500);
         });
 
         const sendMsgBtn = document.getElementById('sendMsgBtn');
