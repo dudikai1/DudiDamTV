@@ -266,16 +266,54 @@ msgInput.addEventListener('keypress', (e) => {
         msgInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
-    </script>
-<script src="/socket.io/socket.io.js"></script>
+    </script><script src="/socket.io/socket.io.js"></script>
     <script>
+        const startBtn = document.getElementById('startBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const remotePlaceholder = document.getElementById('remotePlaceholder');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const statusDiv = document.getElementById('status');
+        let localStream = null;
+
         const socket = io();
+
+        async function startSearch() {
+            try {
+                if (!localStream) {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                }
+                if (statusDiv) statusDiv.textContent = 'מחפש משתמש...';
+                if (remotePlaceholder) remotePlaceholder.style.display = 'none';
+                if (remoteVideo) remoteVideo.style.display = 'block';
+                
+                socket.emit('find-partner');
+            } catch (err) {
+                console.error('שגיאה בגישה למצלמה:', err);
+                if (statusDiv) statusDiv.textContent = 'שגיאה בגישה למצלמה';
+            }
+        }
+
+        if (startBtn) startBtn.addEventListener('click', startSearch);
+        if (nextBtn) nextBtn.addEventListener('click', startSearch);
+
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                    localStream = null;
+                }
+                if (remotePlaceholder) remotePlaceholder.style.display = 'flex';
+                if (remoteVideo) remoteVideo.style.display = 'none';
+                if (statusDiv) statusDiv.textContent = 'הופסק';
+            });
+        }
+
         socket.on('update-user-count', (userCount) => {
             const countSpan = document.getElementById('count');
             if (countSpan) {
                 countSpan.textContent = userCount;
             }
         });
-    </script>
-</body>
+    </script></body>
 </html>
