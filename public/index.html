@@ -103,11 +103,12 @@
             z-index: 5;
         }
 
-        .controls { margin-top: 15px; display: flex; gap: 15px; }
-        button { padding: 10px 22px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .controls { margin-top: 15px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
+        button { padding: 10px 18px; font-size: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-start { background-color: #00e676; color: #000; }
         .btn-next { background-color: #ff9800; color: #000; }
         .btn-stop { background-color: #f44336; color: #fff; }
+        .btn-cam { background-color: #2196F3; color: #fff; }
         
         .chat-container { flex: 1; background-color: #1e1e1e; display: flex; flex-direction: column; border-right: 2px solid #333; }
         .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -141,7 +142,7 @@
             </div>
 
             <div class="video-container">
-                <div id="status">ממתין להפעלה...</div>
+                <div id="status">לחץ על "הפעל מצלמה" כדי להתחיל</div>
                 <div class="videos">
                     <!-- מסך האדם השני (שמאל) עם השלג והלוגו -->
                     <div class="video-box noise-bg" id="remoteBox">
@@ -165,6 +166,7 @@
                 </div>
                 
                 <div class="controls">
+                    <button class="btn-cam" id="camBtn">הפעל מצלמה</button>
                     <button class="btn-stop" id="stopBtn">הפסק</button>
                     <button class="btn-next" id="nextBtn">הבא</button>
                     <button class="btn-start" id="startBtn">התחל</button>
@@ -177,6 +179,7 @@
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const camBtn = document.getElementById('camBtn');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
@@ -184,16 +187,26 @@
         const statusDiv = document.getElementById('status');
         let localStream = null;
 
-        window.addEventListener('load', async () => {
+        async function initCamera() {
             try {
-                statusDiv.textContent = 'מפעיל מצלמה...';
+                statusDiv.textContent = 'מבקש גישה למצלמה...';
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
-                statusDiv.textContent = 'מחובר (מוכן להתחלה)';
+                statusDiv.textContent = 'המצלמה פועלת בהצלחה';
             } catch (err) {
                 console.error(err);
-                statusDiv.textContent = 'שגיאה: אין גישה למצלמה (בדוק הרשאות)';
+                statusDiv.textContent = 'שגיאה: הדפדפן חסם מצלמה או שהיא בשימוש';
             }
+        }
+
+        // הפעלה אוטומטית בעליית הדף
+        window.addEventListener('load', () => {
+            initCamera();
+        });
+
+        // כפתור ידני להפעלת המצלמה
+        camBtn.addEventListener('click', () => {
+            initCamera();
         });
 
         function showNoUsers() {
