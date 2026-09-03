@@ -267,10 +267,12 @@ msgInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
     </script><script src="/socket.io/socket.io.js"></script>
+ <script src="/socket.io/socket.io.js"></script>
     <script>
         const startBtn = document.getElementById('startBtn');
         const nextBtn = document.getElementById('nextBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const camBtn = document.getElementById('camBtn');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
         const remoteVideo = document.getElementById('remoteVideo');
         const statusDiv = document.getElementById('status');
@@ -296,6 +298,7 @@ msgInput.addEventListener('keypress', (e) => {
 
         if (startBtn) startBtn.addEventListener('click', startSearch);
         if (nextBtn) nextBtn.addEventListener('click', startSearch);
+        if (camBtn) camBtn.addEventListener('click', startSearch);
 
         if (stopBtn) {
             stopBtn.addEventListener('click', () => {
@@ -315,5 +318,6 @@ msgInput.addEventListener('keypress', (e) => {
                 countSpan.textContent = userCount;
             }
         });
-    </script></body>
+    </script>
+</body>
 </html>
