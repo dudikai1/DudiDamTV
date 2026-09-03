@@ -356,21 +356,21 @@
         const msgInput = document.getElementById('msgInput');
         const messagesContainer = document.querySelector('.messages');
 
-        const sendMessage = () => {
-            const text = msgInput.value.trim();
-            if (text !== '') {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'message self';
-                msgDiv.textContent = text;
-                messagesContainer.appendChild(msgDiv);
-                msgInput.value = '';
-              messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            };
-            
-       msgInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-</script>
-</body>
-</html>
+  const sendMessage = () => {
+    const text = msgInput.value.trim();
+    if (text !== '') {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message self';
+        msgDiv.textContent = text;
+        messagesContainer.appendChild(msgDiv);
+        msgInput.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+};
 
+sendMsgBtn.addEventListener('click', sendMessage);
+msgInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+});
+});
+</script>
