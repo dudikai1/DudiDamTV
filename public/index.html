@@ -11,7 +11,7 @@
         .main-container { display: flex; flex: 1; overflow: hidden; }
         .video-container { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #000; position: relative; padding: 10px; }
         .videos { display: flex; width: 100%; height: 80%; gap: 10px; justify-content: center; align-items: center; }
-        video { width: 48%; height: 100%; object-fit: cover; background-color: #222; border-radius: 8px; }
+        video { width: 48%; height: 100%; object-fit: cover; background-color: #222; border-radius: 8px; transform: scaleX(-1); }
         .controls { margin-top: 15px; display: flex; gap: 15px; }
         button { padding: 12px 24px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-start { background-color: #00e676; color: #000; }
@@ -43,21 +43,22 @@
         </div>
 
         <div class="video-container">
-            <div id="status">לחץ על "התחל" כדי לחפש פרטנר</div>
+            <div id="status">לחץ על "התחל" כדי להפעיל מצלמה</div>
             <div class="videos">
-                <video autoplay playsinline muted></video>
-                <video autoplay playsinline></video>
+                <video id="localVideo" autoplay playsinline muted></video>
+                <video id="remoteVideo" autoplay playsinline></video>
             </div>
             <div class="controls">
-                <button class="btn-stop">הפסק</button>
-                <button class="btn-next">הבא</button>
-                <button class="btn-start">התחל</button>
+                <button class="btn-stop" id="stopBtn">הפסק</button>
+                <button class="btn-next" id="nextBtn">הבא</button>
+                <button class="btn-start" id="startBtn">התחל</button>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Chat functionality
             const sendBtn = document.querySelector('.chat-input button');
             const inputField = document.querySelector('.chat-input input');
             const messagesContainer = document.querySelector('.messages');
@@ -76,13 +77,39 @@
                 };
 
                 sendBtn.addEventListener('click', sendMessage);
-                
                 inputField.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         sendMessage();
                     }
                 });
             }
+
+            // Camera functionality
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const localVideo = document.getElementById('localVideo');
+            const statusDiv = document.getElementById('status');
+            let localStream = null;
+
+            startBtn.addEventListener('click', async () => {
+                try {
+                    statusDiv.textContent = 'מפעיל מצלמה...';
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    localVideo.srcObject = localStream;
+                    statusDiv.textContent = 'הצלחת להפעיל מצלמה!';
+                } catch (err) {
+                    console.error(err);
+                    statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
+                }
+            });
+
+            stopBtn.addEventListener('click', () => {
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                    localVideo.srcObject = null;
+                    statusDiv.textContent = 'המצלמה הופסקה';
+                }
+            });
         });
     </script>
 </body>
