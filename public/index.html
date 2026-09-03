@@ -16,17 +16,10 @@
             justify-content: center;
             min-height: 100vh;
         }
-        .main-wrapper {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            justify-content: center;
-            align-items: flex-start;
-        }
         .tv-container {
             position: relative;
             width: 800px;
-            max-width: 80vw;
+            max-width: 90vw;
             height: 450px;
             background-color: #000;
             border-radius: 12px;
@@ -40,151 +33,88 @@
             font-size: 24px;
             color: #888;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
             height: 100%;
-            text-align: center;
-        }
-        #remotePlaceholder img {
-            margin-bottom: 15px;
-            max-width: 100px;
-        }
-        #remoteVideo {
-            display: none; 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover;
-        }
-        .chat-container {
-            width: 300px;
-            background-color: #212121;
-            border-radius: 12px;
-            padding: 15px;
-            height: 450px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-        .chat-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
-        }
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-            font-size: 14px;
-            color: #ccc;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-        #msgInput {
-            flex: 1;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: #fff;
-        }
-        #sendMsgBtn {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: none;
-            background-color: #00c853;
-            color: #fff;
-            cursor: pointer;
         }
         .controls {
-            margin-top: 30px;
+            margin-top: 25px;
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
             align-items: center;
         }
         .btn-start {
             background-color: #0b3d20;
             color: #fff;
-            font-size: 36px;
+            font-size: 24px;
             font-weight: bold;
-            padding: 30px 50px;
             border: none;
             border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.4);
-            width: 240px;
-            height: 150px;
-            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 160px;
+            height: 100px;
+        }
+        .btn-next {
+            background-color: #ff9800;
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 160px;
+            height: 100px;
         }
         .btn-stop {
             background-color: #4a2522;
             color: #fff;
-            font-size: 36px;
+            font-size: 24px;
             font-weight: bold;
-            padding: 30px 50px;
             border: none;
             border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.4);
-            width: 240px;
-            height: 150px;
-            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 160px;
+            height: 100px;
         }
-        .btn-start:active, .btn-stop:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+        .btn-start:hover, .btn-next:hover, .btn-stop:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
         #status {
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 18px;
             color: #aaa;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <div class="tv-container">
-            <div id="remotePlaceholder">
-                <img src="https://i.ibb.co/xYm813k/dudidam-tv-logo.png" alt="DudiDamTV Logo">
-                לחץ על התחל כדי להתחיל
-            </div>
-            <video id="remoteVideo" autoplay playsinline></video>
-        </div>
-
-        <div class="chat-container">
-            <div class="chat-header">צ'אט</div>
-            <div id="messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="msgInput" placeholder="כתוב הודעה...">
-                <button id="sendMsgBtn">שלח</button>
-            </div>
-        </div>
+    <div class="tv-container">
+        <div id="remotePlaceholder">לחץ על התחל כדי להתחיל</div>
+        <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
     </div>
 
     <div id="status">מוכן</div>
 
     <div class="controls">
         <button id="startBtn" class="btn-start">התחל</button>
+        <button id="nextBtn" class="btn-next">הבא</button>
         <button id="stopBtn" class="btn-stop">עצור</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const startBtn = document.getElementById('startBtn');
+        const nextBtn = document.getElementById('nextBtn');
         const stopBtn = document.getElementById('stopBtn');
         const remotePlaceholder = document.getElementById('remotePlaceholder');
         const remoteVideo = document.getElementById('remoteVideo');
         const statusDiv = document.getElementById('status');
-        const msgInput = document.getElementById('msgInput');
-        const sendMsgBtn = document.getElementById('sendMsgBtn');
-        const messagesContainer = document.getElementById('messages');
         let localStream = null;
 
         const socket = io();
@@ -194,64 +124,37 @@
                 if (!localStream) {
                     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 }
-                statusDiv.textContent = 'מחפש משתמש...';
-                remotePlaceholder.style.display = 'none';
-                remoteVideo.style.display = 'block';
-                // הדמה את הוידאו המרוחק עם הוידאו המקומי לבדיקה (תחליף את זה בזרם האמיתי מהשרת)
-                remoteVideo.srcObject = localStream; 
+                if (statusDiv) statusDiv.textContent = 'מחפש משתמש...';
+                if (remotePlaceholder) remotePlaceholder.style.display = 'none';
+                if (remoteVideo) remoteVideo.style.display = 'block';
                 
                 socket.emit('find-partner');
             } catch (err) {
                 console.error('שגיאה בגישה למצלמה:', err);
-                statusDiv.textContent = 'שגיאה בגישה למצלמה';
-                remotePlaceholder.innerHTML = '<span style="color:red;">שגיאה בגישה למצלמה. בדוק הרשאות.</span>';
+                if (statusDiv) statusDiv.textContent = 'שגיאה בגישה למצלמה';
             }
         }
 
-        function stopSearch() {
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
-            if (remoteVideo) remoteVideo.pause();
-            remoteVideo.srcObject = null;
-            remoteVideo.style.display = 'none';
-            remotePlaceholder.style.display = 'flex';
-            remotePlaceholder.innerHTML = '<img src="https://i.ibb.co/xYm813k/dudidam-tv-logo.png" alt="DudiDamTV Logo">לחץ על התחל כדי להתחיל';
-            statusDiv.textContent = 'הופסק';
-            socket.emit('stop-search');
-        }
+        if (startBtn) startBtn.addEventListener('click', startSearch);
+        if (nextBtn) nextBtn.addEventListener('click', startSearch);
 
-        startBtn.addEventListener('click', startSearch);
-        stopBtn.addEventListener('click', stopSearch);
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                    localStream = null;
+                }
+                if (remotePlaceholder) remotePlaceholder.style.display = 'flex';
+                if (remoteVideo) remoteVideo.style.display = 'none';
+                if (statusDiv) statusDiv.textContent = 'הופסק';
+            });
+        }
 
         socket.on('update-user-count', (userCount) => {
-            // כאן אפשר להוסיף לוגיקה לעדכון מונה המשתמשים אם רוצים.
-        });
-
-        socket.on('new-message', (data) => {
-            const msgDiv = document.createElement('div');
-            msgDiv.textContent = `${data.username}: ${data.text}`;
-            messagesContainer.appendChild(msgDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        });
-
-        function sendMessage() {
-            const text = msgInput.value.trim();
-            if (text) {
-                socket.emit('send-message', text);
-                const msgDiv = document.createElement('div');
-                msgDiv.textContent = `אני: ${text}`;
-                msgDiv.style.color = '#00c853';
-                messagesContainer.appendChild(msgDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                msgInput.value = '';
+            const countSpan = document.getElementById('count');
+            if (countSpan) {
+                countSpan.textContent = userCount;
             }
-        }
-
-        sendMsgBtn.addEventListener('click', sendMessage);
-        msgInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
         });
     </script>
 </body>
