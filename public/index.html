@@ -8,14 +8,18 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #121212; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
+        /* רקע שלג משותף */
+        .noise-bg {
+            background-color: #222;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.15"/></svg>');
+        }
+
         #home-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #222;
-            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.15"/></svg>');
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,6 +28,7 @@
             cursor: pointer;
         }
 
+        /* עיצוב לוגו הטלוויזיה */
         .tv-logo-box {
             background-color: #ff8a65;
             width: 220px;
@@ -100,13 +105,60 @@
         header { background-color: #1f1f1f; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; color: #00e676; border-bottom: 2px solid #333; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
         .video-container { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #000; position: relative; padding: 10px; }
+        
         .videos { display: flex; width: 100%; height: 80%; gap: 10px; justify-content: center; align-items: center; }
-        video { width: 48%; height: 100%; object-fit: cover; background-color: #222; border-radius: 8px; transform: scaleX(-1); }
+        
+        /* מעטפת לסרטונים כדי שנוכל למקם את הלוגו בתוך המסך של האדם השני */
+        .video-box {
+            width: 48%;
+            height: 100%;
+            position: relative;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video { width: 100%; height: 100%; object-fit: cover; background-color: #222; }
+        #localVideo { transform: scaleX(-1); }
+
+        /* שכבת הלוגו שמופיעה במסך של האדם השני כשאין שיחה */
+        #remotePlaceholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+        
+        /* הקטנה קלה של הלוגו שיתאים בול למסך הווידאו */
+        #remotePlaceholder .tv-logo-box {
+            width: 160px;
+            height: 100px;
+            border-radius: 18px;
+            border-width: 3px;
+        }
+        #remotePlaceholder .tv-logo-box::before, #remotePlaceholder .tv-logo-box::after {
+            top: -18px;
+            height: 18px;
+        }
+        #remotePlaceholder .tv-title-1 { font-size: 26px; }
+        #remotePlaceholder .tv-title-2 { font-size: 28px; }
+        #remotePlaceholder .tv-buttons { top: 30px; right: 8px; gap: 6px; }
+        #remotePlaceholder .tv-btn-dot { width: 7px; height: 7px; }
+
         .controls { margin-top: 15px; display: flex; gap: 15px; }
         button { padding: 12px 24px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-start { background-color: #00e676; color: #000; }
         .btn-next { background-color: #ff9800; color: #000; }
         .btn-stop { background-color: #f44336; color: #fff; }
+        
         .chat-container { flex: 1; background-color: #1e1e1e; display: flex; flex-direction: column; border-right: 2px solid #333; }
         .messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .message { background-color: #333; padding: 8px 12px; border-radius: 5px; max-width: 80%; }
@@ -114,7 +166,7 @@
         .chat-input { display: flex; padding: 10px; background-color: #252525; }
         .chat-input input { flex: 1; padding: 10px; border: none; border-radius: 5px; background-color: #333; color: #fff; margin-left: 10px; }
         .chat-input button { background-color: #00e676; color: #000; }
-        #status { position: absolute; top: 20px; background: rgba(0, 0, 0, 0.7); padding: 8px 16px; border-radius: 20px; font-size: 14px; }
+        #status { position: absolute; top: 20px; background: rgba(0, 0, 0, 0.7); padding: 8px 16px; border-radius: 20px; font-size: 14px; z-index: 10; }
 
         @media (max-width: 768px) {
             .main-container { flex-direction: column-reverse; }
@@ -125,7 +177,8 @@
 </head>
 <body>
 
-    <div id="home-screen">
+    <!-- מסך הבית הראשי -->
+    <div id="home-screen" class="noise-bg">
         <div class="tv-logo-box">
             <div class="tv-buttons">
                 <div class="tv-btn-dot"></div>
@@ -136,6 +189,7 @@
         </div>
     </div>
 
+    <!-- האפליקציה הראשית -->
     <div id="main-app">
         <header>DudiDamTV</header>
         <div class="main-container">
@@ -152,8 +206,24 @@
             <div class="video-container">
                 <div id="status">ממתין להפעלה...</div>
                 <div class="videos">
-                    <video id="localVideo" autoplay playsinline muted></video>
-                    <video id="remoteVideo" autoplay playsinline></video>
+                    <!-- מסך המצלמה שלך -->
+                    <div class="video-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
+                    <!-- מסך האדם השני עם הלוגו ברקע השלג -->
+                    <div class="video-box noise-bg" id="remoteBox">
+                        <div id="remotePlaceholder">
+                            <div class="tv-logo-box">
+                                <div class="tv-buttons">
+                                    <div class="tv-btn-dot"></div>
+                                    <div class="tv-btn-dot"></div>
+                                </div>
+                                <div class="tv-title-1">DudiDam</div>
+                                <div class="tv-title-2">TV</div>
+                            </div>
+                        </div>
+                        <video id="remoteVideo" autoplay playsinline style="position: relative; z-index: 6; display: none;"></video>
+                    </div>
                 </div>
                 <div class="controls">
                     <button class="btn-stop" id="stopBtn">הפסק</button>
@@ -171,6 +241,8 @@
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const remotePlaceholder = document.getElementById('remotePlaceholder');
         const statusDiv = document.getElementById('status');
         let localStream = null;
 
@@ -196,6 +268,9 @@
                     localVideo.srcObject = localStream;
                 }
                 statusDiv.textContent = 'מחובר';
+                // דוגמה: ברגע שמתחילים שיחה, אפשר להסתיר את הלוגו ולהציג וידאו (כשתחבר WebRTC אמיתי)
+                // remotePlaceholder.style.display = 'none';
+                // remoteVideo.style.display = 'block';
             } catch (err) {
                 statusDiv.textContent = 'שגיאה: אין גישה למצלמה';
             }
@@ -206,6 +281,9 @@
                 localStream.getTracks().forEach(track => track.stop());
                 localVideo.srcObject = null;
             }
+            // מחזיר את הלוגו למסך של האדם השני ומחזיר למסך הבית
+            remotePlaceholder.style.display = 'flex';
+            remoteVideo.style.display = 'none';
             mainApp.style.display = 'none';
             homeScreen.style.display = 'flex';
         });
