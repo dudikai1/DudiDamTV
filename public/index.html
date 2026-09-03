@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DudiDamTV - צ'אט וידאו אקראי</title>
-    <meta name="description" content="האתר הרשמי DudiDamTV - צ'אט וידאו בלייב לדבר ולפגוש אנשים">
-    <meta name="keywords" content="DudiDamTV, DudiDam, אומגל, צ'אט וידאו">
-    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #121212; color: #fff; display: flex; flex-direction: column; height: 100vh; }
@@ -32,9 +29,8 @@
     </style>
 </head>
 <body>
-
     <header>DudiDamTV</header>
-
+    
     <div class="main-container">
         <!-- אזור הצ'אט -->
         <div class="chat-container">
@@ -55,38 +51,41 @@
                 <video autoplay playsinline></video>
             </div>
             <div class="controls">
-                <button class="btn-stop">פסק</button>
+                <button class="btn-stop">הפסק</button>
                 <button class="btn-next">הבא</button>
                 <button class="btn-start">התחל</button>
             </div>
         </div>
     </div>
 
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const sendBtn = document.querySelector('.chat-input button');
+            const inputField = document.querySelector('.chat-input input');
+            const messagesContainer = document.querySelector('.messages');
+
+            if (sendBtn && inputField && messagesContainer) {
+                const sendMessage = () => {
+                    const text = inputField.value.trim();
+                    if (text !== '') {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'message self';
+                        msgDiv.textContent = text;
+                        messagesContainer.appendChild(msgDiv);
+                        inputField.value = '';
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                };
+
+                sendBtn.addEventListener('click', sendMessage);
+                
+                inputField.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const sendBtn = document.querySelector('.chat-input button');
-        const inputField = document.querySelector('.chat-input input');
-        const messagesContainer = document.querySelector('.messages');
-
-        if (sendBtn && inputField && messagesContainer) {
-            sendBtn.addEventListener('click', () => {
-                const text = inputField.value.trim();
-                if (text !== '') {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = 'message self';
-                    msgDiv.textContent = text;
-                    messagesContainer.appendChild(msgDiv);
-                    inputField.value = '';
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }
-            });
-
-            inputField.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendBtn.click();
-                }
-            });
-        }
-    });
