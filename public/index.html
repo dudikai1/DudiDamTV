@@ -399,15 +399,7 @@ sendMsgBtn.addEventListener('click', sendMessage);
 msgInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
 });
-msgDiv.textContent = data.text;
-    messagesContainer.appendChild(msgDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-});
 
-sendMsgBtn.addEventListener('click', sendMessage);
-msgInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-});
 
 document.getElementById('start-btn').addEventListener('click', async () => {
     try {
