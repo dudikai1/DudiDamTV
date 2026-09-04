@@ -409,7 +409,6 @@ msgInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
 });
 
-// המאזין של כפתור ההתחל בתוך הסקריפט:
 document.getElementById('start-btn').addEventListener('click', async () => {
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
