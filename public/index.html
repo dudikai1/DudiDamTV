@@ -359,6 +359,10 @@ const messagesContainer = document.querySelector('.messages');
 const sendMessage = () => {
     const text = msgInput.value.trim();
     if (text !== '') {
+        // שליחת ההודעה לבן-הזוג דרך השרת
+        socket.emit('chat-message', { text: text, sender: socket.id });
+
+        // הצגת ההודעה אצלך
         const msgDiv = document.createElement('div');
         msgDiv.className = 'message self';
         msgDiv.textContent = text;
@@ -367,6 +371,14 @@ const sendMessage = () => {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 };
+        // קבלת הודעה מבן-הזוג
+socket.on('chat-message', (data) => {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message partner';
+    msgDiv.textContent = data.text;
+    messagesContainer.appendChild(msgDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+});
 
 sendMsgBtn.addEventListener('click', sendMessage);
 msgInput.addEventListener('keypress', (e) => {
