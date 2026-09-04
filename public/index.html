@@ -308,12 +308,19 @@
 
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-            peerConnection.ontrack = (event) => {
-                remoteVideo.srcObject = event.streams[0];
-                remoteVideo.style.display = 'block';
-                remotePlaceholder.style.display = 'none';
-                statusDiv.textContent = 'מחובר!';
-            };
+    peerConnection.ontrack = (event) => {
+        const remoteVideo = document.getElementById('remoteVideo');
+        if (remoteVideo) {
+            remoteVideo.srcObject = event.streams[0];
+            remoteVideo.style.display = 'block';
+        }
+        if (typeof remotePlaceholder !== 'undefined' && remotePlaceholder) {
+            remotePlaceholder.style.display = 'none';
+        }
+        if (typeof statusDiv !== 'undefined' && statusDiv) {
+            statusDiv.textContent = 'מחובר!';
+        }
+    };
 
             peerConnection.onicecandidate = (event) => {
                 if (event.candidate) {
