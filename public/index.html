@@ -248,6 +248,7 @@
             socket.emit('find-partner');
         });
 
+        // כפתור העצור המעודכן - מנתק את השיחה ומחזיר את הלוגו למסך
         stopBtn.addEventListener('click', () => {
             resetPeerConnection();
             socket.emit('skip');
