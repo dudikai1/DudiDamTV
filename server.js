@@ -45,6 +45,11 @@ io.on('connection', (socket) => {
     socket.on('ice-candidate', (data) => {
         io.to(data.target).emit('ice-candidate', { candidate: data.candidate, sender: socket.id });
     });
+    socket.on('chat-message', (data) => {
+        if (socket.partnerId) {
+            io.to(socket.partnerId).emit('chat-message', data);
+        }
+    });
 
     socket.on('skip', () => {
         disconnectPartner(socket);
