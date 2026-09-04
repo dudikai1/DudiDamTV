@@ -399,6 +399,36 @@ sendMsgBtn.addEventListener('click', sendMessage);
 msgInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
 });
+msgDiv.textContent = data.text;
+    messagesContainer.appendChild(msgDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+});
+
+sendMsgBtn.addEventListener('click', sendMessage);
+msgInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+});
+
+// המאזין של כפתור ההתחל בתוך הסקריפט:
+document.getElementById('start-btn').addEventListener('click', async () => {
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        const localVideo = document.getElementById('localVideo');
+        if (localVideo) {
+            localVideo.srcObject = localStream;
+            localVideo.style.display = 'block';
+        }
+        
+        const localPlaceholder = document.getElementById('localPlaceholder');
+        if (localPlaceholder) {
+            localPlaceholder.style.display = 'none';
+        }
+
+        socket.emit('find-partner');
+    } catch (err) {
+        console.error("שגיאה בגישה למצלמה:", err);
+        alert("לא ניתן לגשת למצלמה. ודא שאפשרת גישה בדפדפן.");
+    }
+});
 </script>
-
-
