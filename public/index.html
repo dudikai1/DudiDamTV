@@ -131,13 +131,27 @@
             flex-direction: row;
         }
 
-        /* כפתור עצור משמאל (מתחת למסך השמאלי), או כפתור התחל/עצור במרכז */
-        .left-controls {
+        /* צ'אט בצד ימין (מתחת למסך שלך) */
+        .chat-container { 
             order: 1;
+            flex: 1;
+            height: 100%;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #ddd;
+            overflow: hidden;
+            color: #333;
+            position: relative;
+        }
+
+        /* קבוצת הכפתורים באמצע (עצור ואז התחל לידו) */
+        .controls-group {
+            order: 2;
             display: flex;
             gap: 10px;
             height: 100%;
-            width: 220px; /* רוחב לשתי כפתורים יחד או כפתור עצור בודד */
         }
 
         .ctrl-btn {
@@ -153,23 +167,8 @@
             height: 100%;
             color: #fff;
         }
-        #startBtn { background-color: #66bb6a; }
         #stopBtn { background-color: #ffab91; }
-
-        /* צ'אט בצד ימין מתחת למצלמה שלך */
-        .chat-container { 
-            order: 2;
-            flex: 1;
-            height: 100%;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            display: flex; 
-            flex-direction: column; 
-            border: 1px solid #ddd;
-            overflow: hidden;
-            color: #333;
-            position: relative;
-        }
+        #startBtn { background-color: #66bb6a; }
 
         .messages { flex: 1; padding: 4px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
         .message { background-color: #e0e0e0; padding: 3px 8px; border-radius: 6px; max-width: 90%; word-break: break-word; }
@@ -228,13 +227,7 @@
                 
                 <!-- פאנל תחתון -->
                 <div class="bottom-panel">
-                    <!-- כפתורים (עצור והתחל) בצד שמאל / באמצע -->
-                    <div class="left-controls">
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                    </div>
-
-                    <!-- צ'אט תופס את שאר המקום בצד ימין מתחת למצלמה שלך -->
+                    <!-- צ'אט בצד ימין (מתחת למסך שלך) -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -244,6 +237,12 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
+                    </div>
+
+                    <!-- כפתורים באמצע (עצור ואז התחל לידו) -->
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
                     </div>
                 </div>
             </div>
