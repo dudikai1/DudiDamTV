@@ -29,6 +29,7 @@
             display: flex;
             flex: 1;
             height: calc(100vh - 50px);
+            flex-direction: row-reverse; /* שומר שהצ'אט יהיה מימין והוידאו משמאל/מרכז */
         }
         .video-section {
             flex: 2;
@@ -39,7 +40,6 @@
             background-color: #0b0b0b;
             position: relative;
             padding: 20px;
-            border-left: 1px solid #222;
         }
         .videos-wrapper {
             display: flex;
@@ -121,11 +121,11 @@
         }
         #stop-btn:hover { background-color: #4e342e; }
         .chat-section {
-            flex: 1;
+            width: 320px;
             background-color: #181818;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #333;
+            border-left: 1px solid #333;
         }
         .chat-messages {
             flex: 1;
@@ -161,7 +161,18 @@
     <header>Nissim TV</header>
 
     <div class="main-container">
-        <!-- אזור הוידאו -->
+        <!-- אזור הצ'אט (ממוקם מימין) -->
+        <div class="chat-section">
+            <div id="messagesContainer" class="chat-messages">
+                <div style="color: #888; text-align: center;">ברוך הבא ל-Nissim TV!</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="msgInput" placeholder="רשום הודעה...">
+                <button id="sendMsgBtn">שלח</button>
+            </div>
+        </div>
+
+        <!-- אזור הוידאו (ממוקם במרכז/שמאל) -->
         <div class="video-section">
             <div style="color: #bbb; margin-bottom: 15px; font-size: 14px;">לחץ על "התחל" כדי להתחבר</div>
             <div class="videos-wrapper">
@@ -187,17 +198,6 @@
             <div class="controls">
                 <button id="stop-btn">עצור</button>
                 <button id="start-btn">התחל</button>
-            </div>
-        </div>
-
-        <!-- אזור הצ'אט -->
-        <div class="chat-section">
-            <div id="messagesContainer" class="chat-messages">
-                <div style="color: #888; text-align: center;">ברוך הבא ל-Nissim TV!</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="msgInput" placeholder="רשום הודעה...">
-                <button id="sendMsgBtn">שלח</button>
             </div>
         </div>
     </div>
