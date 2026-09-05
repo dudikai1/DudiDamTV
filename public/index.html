@@ -164,7 +164,7 @@
         <div class="video-section">
             <div style="color: #bbb; margin-bottom: 15px; font-size: 14px;">לחץ על "התחל" כדי להתחבר</div>
             <div class="videos-wrapper">
-                <!-- תיבה שמאלית - הוידאו המקומי שלך -->
+                <!-- וידאו מקומי -->
                 <div class="video-box">
                     <div id="localPlaceholder" class="placeholder">
                         <div class="logo-box">
@@ -174,10 +174,10 @@
                     </div>
                     <video id="localvideo" autoplay playsinline muted></video>
                 </div>
-                <!-- תיבה ימנית - הוידאו של הצד השני -->
+                <!-- וידאו מרוחק -->
                 <div class="video-box">
                     <div id="remotePlaceholder" class="placeholder">
-                        <div style="color: #777;">מחפש משתמש נוסף...</div>
+                        <div style="color: #777;">מחכה לצופה נוסף...</div>
                     </div>
                     <video id="remotevideo" autoplay playsinline></video>
                 </div>
@@ -223,12 +223,12 @@
                 document.getElementById('localPlaceholder').style.display = 'none';
 
                 socket.emit('join-room');
-            } theCatch (err) {
+            } catch (err) {
                 console.error('שגיאה בגישה למצלמה:', err);
+                alert('לא ניתן לגשת למצלמה או למיקרופון.');
             }
         });
 
-        // תיקון קל בלעצור כדי שירענן חלק
         document.getElementById('stop-btn').addEventListener('click', () => {
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
