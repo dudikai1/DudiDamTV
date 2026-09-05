@@ -10,8 +10,8 @@
         
         .tv-logo-box {
             background-color: #ff8a65;
-            width: 180px;
-            height: 115px;
+            width: 220px;
+            height: 140px;
             border-radius: 20px;
             position: relative;
             display: flex;
@@ -25,10 +25,10 @@
         .tv-logo-box::before {
             content: '';
             position: absolute;
-            top: -20px;
-            left: 45px;
-            width: 4px;
-            height: 20px;
+            top: -25px;
+            left: 55px;
+            width: 5px;
+            height: 25px;
             background-color: #ff8a65;
             transform: rotate(-30deg);
             border-radius: 2px;
@@ -36,10 +36,10 @@
         .tv-logo-box::after {
             content: '';
             position: absolute;
-            top: -20px;
-            right: 45px;
-            width: 4px;
-            height: 20px;
+            top: -25px;
+            right: 55px;
+            width: 5px;
+            height: 25px;
             background-color: #ff8a65;
             transform: rotate(30deg);
             border-radius: 2px;
@@ -47,21 +47,21 @@
 
         .tv-buttons {
             position: absolute;
-            right: 10px;
-            top: 35px;
+            right: 12px;
+            top: 45px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .tv-btn-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: #fff;
             border-radius: 50%;
         }
 
-        .tv-title-1 { color: #fff; font-size: 30px; font-weight: bold; font-family: monospace; letter-spacing: 1px; }
-        .tv-title-2 { color: #69f0ae; font-size: 32px; font-weight: bold; font-family: monospace; }
+        .tv-title-1 { color: #fff; font-size: 36px; font-weight: bold; font-family: monospace; letter-spacing: 1px; }
+        .tv-title-2 { color: #69f0ae; font-size: 38px; font-weight: bold; font-family: monospace; }
 
         #main-app { display: flex; flex-direction: column; height: 100vh; width: 100vw; position: relative; }
         header { background-color: #1f1f1f; padding: 10px; text-align: center; font-size: 18px; font-weight: bold; color: #00e676; border-bottom: 2px solid #333; }
@@ -72,17 +72,15 @@
             flex: 1; 
             display: flex; 
             flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
             background-color: #000; 
             position: relative; 
             padding: 10px; 
         }
         
-        .videos { display: flex; width: 100%; height: 72%; gap: 10px; justify-content: center; align-items: center; }
+        .videos { display: flex; width: 100%; flex: 1; gap: 10px; justify-content: center; align-items: center; }
         
         .video-box {
-            width: 48%;
+            width: 49%;
             height: 100%;
             position: relative;
             background-color: #1a1a1a;
@@ -104,84 +102,92 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 5;
             background-color: #181818;
+            gap: 20px;
         }
 
-        /* אזור הבקרה והצ'אט שיושבים אחד ליד השני תחת הווידאו */
-        .bottom-row {
-            margin-top: 10px;
+        .app-stores {
             display: flex;
             gap: 15px;
-            align-items: center;
-            justify-content: center;
+            background: #111;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        .store-badge { color: #fff; font-size: 13px; display: flex; flex-direction: column; }
+        .store-badge span { font-weight: bold; font-size: 15px; }
+
+        /* שורה תחתונה: כפתורים משמאל וצ'אט מימין */
+        .bottom-panel {
+            margin-top: 10px;
+            display: flex;
+            gap: 12px;
+            height: 105px;
             width: 100%;
-            padding: 0 15px;
+            align-items: center;
         }
 
-        .controls { 
-            display: flex; 
-            gap: 12px; 
-            align-items: center; 
+        .controls-group {
+            display: flex;
+            gap: 12px;
+            height: 100%;
         }
-        
-        .ctrl-giant-btn {
-            font-size: 26px;
+
+        .ctrl-btn {
+            font-size: 28px;
             font-weight: bold;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-            transition: transform 0.1s, box-shadow 0.1s;
-            width: 140px;
-            height: 70px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 130px;
+            height: 100%;
         }
 
-        .ctrl-giant-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-        }
+        #startBtn { background-color: #66bb6a; color: #fff; }
+        #stopBtn { background-color: #ffab91; color: #fff; }
 
-        #startBtn { 
-            background-color: #133a27;
-            color: #b0c4bc;            
-        }
-        
-        #stopBtn { 
-            background-color: #3b2826;  
-            color: #b8aaa7;            
-        }
-        
-        /* צ'אט מותאם שיושב מיד ליד כפתור ההתחל */
+        /* צ'אט תחתון רחב בצד ימין */
         .chat-container { 
-            width: 450px;
-            height: 70px;
-            background-color: rgba(28, 28, 28, 0.95);
+            flex: 1;
+            height: 100%;
+            background-color: #fff;
             border-radius: 12px;
             display: flex; 
             flex-direction: column; 
-            border: 1px solid #444;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            border: 1px solid #ccc;
             overflow: hidden;
+            color: #333;
+            position: relative;
         }
-        .messages { flex: 1; padding: 6px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 12px; background: #181818; }
-        .message { background-color: #333; padding: 3px 6px; border-radius: 4px; max-width: 90%; word-break: break-word; }
-        .message.self { align-self: flex-start; background-color: #00e676; color: #000; }
-        .chat-input { display: flex; padding: 5px; background-color: #222; border-top: 1px solid #333; }
-        .chat-input input { flex: 1; padding: 5px; border: none; border-radius: 4px; background-color: #333; color: #fff; font-size: 12px; outline: none; }
-        .chat-input button { background-color: #00e676; color: #000; padding: 0 12px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-right: 5px; font-size: 12px; }
+        .messages { flex: 1; padding: 8px 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+        .message { background-color: #e0e0e0; padding: 5px 8px; border-radius: 6px; max-width: 90%; word-break: break-word; }
+        .message.self { align-self: flex-start; background-color: #c8e6c9; color: #000; }
         
-        #status { position: absolute; top: 15px; background: rgba(0, 0, 0, 0.7); padding: 6px 14px; border-radius: 20px; font-size: 13px; z-index: 10; }
-
-        @media (max-width: 900px) {
-            .bottom-row { flex-direction: column; }
-            .chat-container { width: 100%; height: 100px; }
+        .chat-rules-banner {
+            background-color: #fffde7;
+            border: 1px solid #fff59d;
+            padding: 6px 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
         }
+
+        .chat-input { display: flex; padding: 6px; background-color: #f1f1f1; border-top: 1px solid #ddd; }
+        .chat-input input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; color: #000; font-size: 13px; outline: none; }
+        .chat-input .emoji-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 0 8px; }
+        
+        #status { position: absolute; top: 15px; left: 20px; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; z-index: 10; }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -190,14 +196,15 @@
     <div id="main-app">
         <header>Nissim TV</header>
         <div class="main-container">
-            <!-- אזור הווידאו -->
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 <div class="videos">
+                    <!-- מסך מצלמה שלך -->
                     <div class="video-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
 
+                    <!-- מסך צד שני -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -205,29 +212,34 @@
                                     <div class="tv-btn-dot"></div>
                                     <div class="tv-btn-dot"></div>
                                 </div>
-                                <div class="tv-title-1" style="font-size: 22px;">NISSIM</div>
-                                <div class="tv-title-2" style="font-size: 26px;">TV</div>
+                                <div class="tv-title-1">Ome</div>
+                                <div class="tv-title-2">TV</div>
+                            </div>
+                            <div class="app-stores">
+                                <div class="store-badge">הורד מה <span>App Store</span></div>
+                                <div class="store-badge" style="border-right: 1px solid #333; padding-right: 15px;">כעת ב- <span>Google Play</span></div>
                             </div>
                         </div>
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
                     </div>
                 </div>
                 
-                <!-- שורה תחתונה המאגדת את הכפתורים ואת הצ'אט בדיוק לידם -->
-                <div class="bottom-row">
-                    <div class="controls">
-                        <button class="ctrl-giant-btn" id="startBtn">התחל</button>
-                        <button class="ctrl-giant-btn" id="stopBtn">עצור</button>
+                <!-- פאנל תחתון כפתורים וצ'אט -->
+                <div class="bottom-panel">
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
 
-                    <!-- הצ'אט ממוקם ממש פה ליד הכפתורים -->
+                    <!-- צ'אט תחתון רחב -->
                     <div class="chat-container">
-                        <div class="messages">
-                            <div class="message">ברוך הבא ל-Nissim TV! על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. ודא שפניך נראים בתוך מסגרת המצלמה.</div>
+                        <div class="chat-rules-banner">
+                            ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
                         </div>
+                        <div class="messages"></div>
                         <div class="chat-input">
+                            <button class="emoji-btn">😊</button>
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
-                            <button id="sendMsgBtn">שלח</button>
                         </div>
                     </div>
                 </div>
@@ -364,25 +376,21 @@
             currentPartnerId = null;
         }
 
-        const sendMsgBtn = document.getElementById('sendMsgBtn');
         const msgInput = document.getElementById('msgInput');
         const messagesContainer = document.querySelector('.messages');
 
-        const sendMessage = () => {
-            const text = msgInput.value.trim();
-            if (text !== '') {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'message self';
-                msgDiv.textContent = text;
-                messagesContainer.appendChild(msgDiv);
-                msgInput.value = '';
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        };
-
-        sendMsgBtn.addEventListener('click', sendMessage);
         msgInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+            if (e.key === 'Enter') {
+                const text = msgInput.value.trim();
+                if (text !== '') {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'message self';
+                    msgDiv.textContent = text;
+                    messagesContainer.appendChild(msgDiv);
+                    msgInput.value = '';
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            }
         });
     </script>
 </body>
