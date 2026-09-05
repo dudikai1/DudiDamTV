@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nissim TV</title>
+    <title>DudiDamTV</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
         body {
@@ -29,7 +29,6 @@
             display: flex;
             flex: 1;
             height: calc(100vh - 50px);
-            flex-direction: row-reverse; /* שומר שהצ'אט יהיה מימין והוידאו משמאל/מרכז */
         }
         .video-section {
             flex: 2;
@@ -40,6 +39,7 @@
             background-color: #0b0b0b;
             position: relative;
             padding: 20px;
+            border-left: 1px solid #222;
         }
         .videos-wrapper {
             display: flex;
@@ -78,7 +78,7 @@
             height: 100%;
         }
         .logo-box {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
             padding: 15px 25px;
             border-radius: 12px;
             text-align: center;
@@ -88,11 +88,10 @@
             margin: 0;
             color: #fff;
             font-size: 22px;
-            letter-spacing: 1px;
         }
         .logo-box p {
             margin: 5px 0 0;
-            color: #f1c40f;
+            color: #00ffcc;
             font-weight: bold;
             font-size: 14px;
         }
@@ -121,11 +120,11 @@
         }
         #stop-btn:hover { background-color: #4e342e; }
         .chat-section {
-            width: 320px;
+            flex: 1;
             background-color: #181818;
             display: flex;
             flex-direction: column;
-            border-left: 1px solid #333;
+            border-right: 1px solid #333;
         }
         .chat-messages {
             flex: 1;
@@ -158,35 +157,24 @@
 </head>
 <body>
 
-    <header>Nissim TV</header>
+    <header>DudiDamTV</header>
 
     <div class="main-container">
-        <!-- אזור הצ'אט (ממוקם מימין) -->
-        <div class="chat-section">
-            <div id="messagesContainer" class="chat-messages">
-                <div style="color: #888; text-align: center;">ברוך הבא ל-Nissim TV!</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="msgInput" placeholder="רשום הודעה...">
-                <button id="sendMsgBtn">שלח</button>
-            </div>
-        </div>
-
-        <!-- אזור הוידאו (ממוקם במרכז/שמאל) -->
+        <!-- אזור הוידאו -->
         <div class="video-section">
             <div style="color: #bbb; margin-bottom: 15px; font-size: 14px;">לחץ על "התחל" כדי להתחבר</div>
             <div class="videos-wrapper">
-                <!-- תיבה שמאלית - המצלמה שלך -->
+                <!-- תיבה שמאלית - הוידאו המקומי שלך -->
                 <div class="video-box">
                     <div id="localPlaceholder" class="placeholder">
                         <div class="logo-box">
-                            <h2>NISSIM</h2>
+                            <h2>DudiDam</h2>
                             <p>TV</p>
                         </div>
                     </div>
                     <video id="localvideo" autoplay playsinline muted></video>
                 </div>
-                <!-- תיבה ימנית - המצלמה של הצד השני -->
+                <!-- תיבה ימנית - הוידאו של הצד השני -->
                 <div class="video-box">
                     <div id="remotePlaceholder" class="placeholder">
                         <div style="color: #777;">מחפש משתמש נוסף...</div>
@@ -198,6 +186,17 @@
             <div class="controls">
                 <button id="stop-btn">עצור</button>
                 <button id="start-btn">התחל</button>
+            </div>
+        </div>
+
+        <!-- אזור הצ'אט -->
+        <div class="chat-section">
+            <div id="messagesContainer" class="chat-messages">
+                <div style="color: #888; text-align: center;">ברוך הבא ל-DudiDamTV!</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="msgInput" placeholder="רשום הודעה...">
+                <button id="sendMsgBtn">שלח</button>
             </div>
         </div>
     </div>
@@ -224,12 +223,12 @@
                 document.getElementById('localPlaceholder').style.display = 'none';
 
                 socket.emit('join-room');
-            } catch (err) {
+            } theCatch (err) {
                 console.error('שגיאה בגישה למצלמה:', err);
-                alert('לא ניתן לגשת למצלמה.');
             }
         });
 
+        // תיקון קל בלעצור כדי שירענן חלק
         document.getElementById('stop-btn').addEventListener('click', () => {
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
