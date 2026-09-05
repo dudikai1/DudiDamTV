@@ -14,7 +14,6 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
         }
         header {
             background-color: #1f1f1f;
@@ -65,7 +64,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: none;
+            display: none; /* מוסתר כברירת מחדל עד להפעלת המצלמה */
         }
         .placeholder {
             position: absolute;
@@ -74,8 +73,6 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            width: 100%;
-            height: 100%;
         }
         .logo-box {
             background: linear-gradient(135deg, #ff7e5f, #feb47b);
@@ -110,12 +107,12 @@
             transition: background 0.2s;
         }
         #start-btn {
-            background-color: #1b5e20;
+            background-color: #2e7d32;
             color: white;
         }
-        #start-btn:hover { background-color: #2e7d32; }
+        #start-btn:hover { background-color: #388e3c; }
         #stop-btn {
-            background-color: #3e2723;
+            background-color: #5d4037; /* צבע חום תואם לתמונה */
             color: white;
         }
         #stop-btn:hover { background-color: #4e342e; }
@@ -162,7 +159,6 @@
     <div class="main-container">
         <!-- אזור הוידאו -->
         <div class="video-section">
-            <div style="color: #bbb; margin-bottom: 15px; font-size: 14px;">לחץ על "התחל" כדי להתחבר</div>
             <div class="videos-wrapper">
                 <!-- וידאו מקומי -->
                 <div class="video-box">
@@ -171,13 +167,14 @@
                             <h2>DudiDam</h2>
                             <p>TV</p>
                         </div>
+                        <p style="color: #666; margin-top: 10px; font-size: 14px;">לחץ על "התחל" כדי להתחבר</p>
                     </div>
                     <video id="localvideo" autoplay playsinline muted></video>
                 </div>
                 <!-- וידאו מרוחק -->
                 <div class="video-box">
                     <div id="remotePlaceholder" class="placeholder">
-                        <div style="color: #777;">מחכה לצופה נוסף...</div>
+                        <p style="color: #666;">מחכה לצופה נוסף...</p>
                     </div>
                     <video id="remotevideo" autoplay playsinline></video>
                 </div>
@@ -214,50 +211,62 @@
             ]
         };
 
+        // --- לוגיקת מצלמה וכפתורים ---
+
         document.getElementById('start-btn').addEventListener('click', async () => {
             try {
+                // בקשת הרשאה למצלמה ומיקרופון
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                
                 const localVideo = document.getElementById('localvideo');
                 localVideo.srcObject = localStream;
-                localVideo.style.display = 'block';
-                document.getElementById('localPlaceholder').style.display = 'none';
+                localVideo.style.display = 'block'; // מציג את הוידאו
+                document.getElementById('localPlaceholder').style.display = 'none'; // מסתיר את הלוגו
 
-                socket.emit('join-room');
+                socket.emit('join-room'); // אותת לשרת שאתה מוכן להתחבר
             } catch (err) {
                 console.error('שגיאה בגישה למצלמה:', err);
-                alert('לא ניתן לגשת למצלמה או למיקרופון.');
+                alert('לא ניתן לגשת למצלמה או למיקרופון. אנא בדוק הרשאות.');
             }
         });
 
         document.getElementById('stop-btn').addEventListener('click', () => {
             if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
+                localStream.getTracks().forEach(track => track.stop()); // עוצר את המצלמה
             }
             if (peerConnection) {
-                peerConnection.close();
+                peerConnection.close(); // סוגר את חיבור ה-WebRTC
             }
-            window.location.reload();
+            window.location.reload(); // רענון דף כדי לחזור למצב התחלתי
         });
+
+        // --- לוגיקת WebRTC ---
 
         socket.on('partner-found', async (data) => {
             currentPartnerId = data.partnerId;
             peerConnection = new RTCPeerConnection(iceServers);
 
+            // הוספת הטרקים מהמצלמה שלנו לחיבור
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
+            // קבלת וידאו מהצד השני
             peerConnection.ontrack = (event) => {
                 const remoteVideo = document.getElementById('remotevideo');
-                remoteVideo.srcObject = event.streams[0];
-                remoteVideo.style.display = 'block';
-                document.getElementById('remotePlaceholder').style.display = 'none';
+                if (remoteVideo.srcObject !== event.streams[0]) {
+                    remoteVideo.srcObject = event.streams[0];
+                    remoteVideo.style.display = 'block';
+                    document.getElementById('remotePlaceholder').style.display = 'none';
+                }
             };
 
+            // שליחת ICE Candidates לצד השני
             peerConnection.onicecandidate = (event) => {
                 if (event.candidate) {
                     socket.emit('ice-candidate', { candidate: event.candidate, target: currentPartnerId });
                 }
             };
 
+            // אם אנחנו היוזמים (initiator), צור Offer
             if (data.initiator) {
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
@@ -268,14 +277,15 @@
         socket.on('offer', async (data) => {
             currentPartnerId = data.sender;
             peerConnection = new RTCPeerConnection(iceServers);
-
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
             peerConnection.ontrack = (event) => {
                 const remoteVideo = document.getElementById('remotevideo');
-                remoteVideo.srcObject = event.streams[0];
-                remoteVideo.style.display = 'block';
-                document.getElementById('remotePlaceholder').style.display = 'none';
+                if (remoteVideo.srcObject !== event.streams[0]) {
+                    remoteVideo.srcObject = event.streams[0];
+                    remoteVideo.style.display = 'block';
+                    document.getElementById('remotePlaceholder').style.display = 'none';
+                }
             };
 
             peerConnection.onicecandidate = (event) => {
@@ -296,9 +306,15 @@
 
         socket.on('ice-candidate', async (data) => {
             if (peerConnection && data.candidate) {
-                await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+                try {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+                } catch (e) {
+                    console.error('Error adding received ice candidate', e);
+                }
             }
         });
+
+        // --- לוגיקת צ'אט ---
 
         const sendMessage = () => {
             const input = document.getElementById('msgInput');
