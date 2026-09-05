@@ -78,7 +78,8 @@
             gap: 10px;
         }
         
-        .videos { display: flex; width: 100%; flex: 1; gap: 10px; justify-content: center; align-items: center; flex-direction: row-reverse; }
+        /* סדר רגיל בשביל שמשתמש יהיה בימין והשני בשמאל במסך RTL */
+        .videos { display: flex; width: 100%; flex: 1; gap: 10px; justify-content: center; align-items: center; }
         
         .video-box {
             width: 49%;
@@ -117,10 +118,9 @@
             height: 110px;
             width: 100%;
             align-items: center;
-            flex-direction: row-reverse;
         }
 
-        /* קבוצת הכפתורים בשמאל */
+        /* קבוצת הכפתורים בימין */
         .controls-group {
             display: flex;
             gap: 10px;
@@ -143,7 +143,7 @@
         #startBtn { background-color: #66bb6a; }
         #stopBtn { background-color: #ffab91; }
 
-        /* צ'אט בצד שמאל מתחת למסך השני */
+        /* צ'אט שמתפרס על שאר המסך משמאל */
         .chat-container { 
             flex: 1;
             height: 100%;
@@ -190,11 +190,6 @@
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 <div class="videos">
-                    <!-- מסך מצלמה שלך (ימין) -->
-                    <div class="video-box">
-                        <video id="localVideo" autoplay playsinline muted></video>
-                    </div>
-
                     <!-- מסך צד שני (שמאל) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
@@ -209,11 +204,22 @@
                         </div>
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
                     </div>
+
+                    <!-- מסך מצלמה שלך (ימין) -->
+                    <div class="video-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
                 </div>
                 
-                <!-- פאנל תחתון: צ'אט וכפתורים מותאמים -->
+                <!-- פאנל תחתון: כפתורים בימין, צ'אט משמאל -->
                 <div class="bottom-panel">
-                    <!-- צ'אט מתחת למסך שלך (ימין בפאנל) -->
+                    <!-- כפתורים מתחת למסך שלך (ימין) -->
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
+                    </div>
+
+                    <!-- צ'אט מתחת למסך השני (שמאל) -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -223,12 +229,6 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
-                    </div>
-
-                    <!-- כפתורים מתחת למסך השני (שמאל בפאנל) -->
-                    <div class="controls-group">
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
