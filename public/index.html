@@ -101,6 +101,7 @@
             border: 2px solid #333;
         }
 
+        /* מסך שני בשמאל, מסך שלך בימין */
         #remoteBox { order: 1; } 
         .local-box { order: 2; } 
 
@@ -146,12 +147,13 @@
             position: relative;
         }
 
-        /* קבוצת הכפתורים באמצע (עצור ואז התחל לידו) */
+        /* כפתורים באמצע: עצור במרכז, התחל ממש לידו משמאל */
         .controls-group {
             order: 2;
             display: flex;
             gap: 10px;
             height: 100%;
+            flex-direction: row-reverse; /* מבטיח ש"התחל" יהיה משמאל ל-"עצור" במסך */
         }
 
         .ctrl-btn {
@@ -239,7 +241,7 @@
                         </div>
                     </div>
 
-                    <!-- כפתורים באמצע (עצור ואז התחל לידו) -->
+                    <!-- כפתורים באמצע: עצור ואז התחל לידו -->
                     <div class="controls-group">
                         <button class="ctrl-btn" id="stopBtn">עצור</button>
                         <button class="ctrl-btn" id="startBtn">התחל</button>
