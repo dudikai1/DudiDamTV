@@ -78,6 +78,7 @@
             gap: 10px;
         }
         
+        /* הכוח כאן הוא row-reverse שמתגבר על ה-RTL של הדפדפן ושם אותך בימין ואת המסך השני בשמאל */
         .videos { 
             display: flex; 
             width: 100%; 
@@ -85,6 +86,7 @@
             gap: 10px; 
             justify-content: center; 
             align-items: center; 
+            flex-direction: row-reverse;
         }
         
         .video-box {
@@ -117,6 +119,7 @@
             background-color: #181818;
         }
 
+        /* גם למטה נעשה אותו דבר בדיוק כדי שהצ'אט יישב מתחתייך והכפתורים מתחת למסך השני */
         .bottom-panel {
             display: flex;
             height: 110px;
@@ -124,7 +127,8 @@
             position: relative;
             align-items: center;
             gap: 10px;
-            justify-content: space-between;
+            flex-direction: row-reverse;
+            justify-content: center;
         }
 
         .controls-group {
@@ -199,7 +203,7 @@
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 
-                <!-- חלק עליון: המצלמה שלך ראשונה (ימין ב-RTL), המסך השני שני (שמאל ב-RTL) -->
+                <!-- חלק עליון: המצלמה שלך ראשונה (תיזרק לימין), מסך שני שני (יישאר בשמאל) -->
                 <div class="videos">
                     <div class="video-box local-box">
                         <video id="localVideo" autoplay playsinline muted></video>
@@ -220,7 +224,7 @@
                     </div>
                 </div>
                 
-                <!-- חלק תחתון: צ'אט ראשון (ימין), כפתורים שניים (שמאל) -->
+                <!-- חלק תחתון: צ'אט ראשון (ייזרק לימין מתחתייך), כפתורים שניים (יישאר בשמאל) -->
                 <div class="bottom-panel">
                     <div class="chat-container">
                         <div class="chat-rules-banner">
@@ -275,7 +279,7 @@
                 await initCamera();
                 if (!localStream) return;
             }
-            statusDiv.textContent = 'מחפש משתמש פנוي...';
+            statusDiv.textContent = 'מחפש משתמש פנוי...';
             socket.emit('find-partner');
         });
 
