@@ -132,7 +132,7 @@
             flex-direction: row;
         }
 
-        /* צ'אט בצד ימין (מתחת למסך שלך) */
+        /* צ'אט בצד ימין */
         .chat-container { 
             order: 1;
             flex: 1;
@@ -147,13 +147,13 @@
             position: relative;
         }
 
-        /* כפתורים באמצע: עצור במרכז, התחל ממש לידו משמאל */
+        /* כפתורים באמצע: עצור במרכז, התחל לידו בדיוק בסדר הנכון */
         .controls-group {
             order: 2;
             display: flex;
             gap: 10px;
             height: 100%;
-            flex-direction: row-reverse; /* מבטיח ש"התחל" יהיה משמאל ל-"עצור" במסך */
+            flex-direction: row;
         }
 
         .ctrl-btn {
@@ -169,8 +169,8 @@
             height: 100%;
             color: #fff;
         }
-        #stopBtn { background-color: #ffab91; }
-        #startBtn { background-color: #66bb6a; }
+        #stopBtn { background-color: #ffab91; order: 2; }
+        #startBtn { background-color: #66bb6a; order: 1; }
 
         .messages { flex: 1; padding: 4px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
         .message { background-color: #e0e0e0; padding: 3px 8px; border-radius: 6px; max-width: 90%; word-break: break-word; }
@@ -241,10 +241,10 @@
                         </div>
                     </div>
 
-                    <!-- כפתורים באמצע: עצור ואז התחל לידו -->
+                    <!-- כפתורים באמצע: התחל ואז עצור לידו -->
                     <div class="controls-group">
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                         <button class="ctrl-btn" id="startBtn">התחל</button>
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
