@@ -85,7 +85,6 @@
             gap: 10px; 
             justify-content: center; 
             align-items: center; 
-            flex-direction: row; 
         }
         
         .video-box {
@@ -100,10 +99,6 @@
             justify-content: center;
             border: 2px solid #333;
         }
-
-        /* מסך שני בשמאל, מסך שלך בימין */
-        #remoteBox { order: 1; } 
-        .local-box { order: 2; } 
 
         video { width: 100%; height: 100%; object-fit: cover; background-color: #1a1a1a; }
         #localVideo { transform: scaleX(-1); }
@@ -122,50 +117,43 @@
             background-color: #181818;
         }
 
-        /* פאנל תחתון */
         .bottom-panel {
             display: flex;
             height: 110px;
             width: 100%;
             position: relative;
             align-items: center;
+            gap: 10px;
+            justify-content: space-between;
         }
 
-        /* כפתורים מוגדלים מתחת למסך השני (שמאל) */
         .controls-group {
-            position: absolute;
-            left: 0;
-            top: 0;
             width: 49%;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             height: 110px;
             justify-content: flex-start;
             align-items: center;
         }
 
         .ctrl-btn {
-            font-size: 24px;
+            font-size: 21px;
             font-weight: bold;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 130px;
-            height: 100%;
+            width: 118px;
+            height: 92%;
             color: #fff;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         #startBtn { background-color: #66bb6a; }
         #stopBtn { background-color: #ffab91; }
 
-        /* צ'אט מתחת למסך שלך (ימין) */
         .chat-container { 
-            position: absolute;
-            right: 0;
-            top: 0;
             width: 49%;
             height: 110px;
             background-color: #f9f9f9;
@@ -210,8 +198,13 @@
         <div class="main-container">
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
+                
+                <!-- חלק עליון: המצלמה שלך ראשונה (ימין ב-RTL), המסך השני שני (שמאל ב-RTL) -->
                 <div class="videos">
-                    <!-- מסך צד שני (שמאל) -->
+                    <div class="video-box local-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
+
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -225,22 +218,10 @@
                         </div>
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
                     </div>
-
-                    <!-- מסך מצלמה שלך (ימין) -->
-                    <div class="video-box local-box">
-                        <video id="localVideo" autoplay playsinline muted></video>
-                    </div>
                 </div>
                 
-                <!-- פאנל תחתון -->
+                <!-- חלק תחתון: צ'אט ראשון (ימין), כפתורים שניים (שמאל) -->
                 <div class="bottom-panel">
-                    <!-- כפתורים מוגדלים מתחת למסך השני (שמאל): התחל ואז עצור -->
-                    <div class="controls-group">
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
-                    </div>
-
-                    <!-- צ'אט מתחת למסך שלך (ימין) -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -250,6 +231,11 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
+                    </div>
+
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
@@ -289,7 +275,7 @@
                 await initCamera();
                 if (!localStream) return;
             }
-            statusDiv.textContent = 'מחפש משתמש פנוי...';
+            statusDiv.textContent = 'מחפש משתמש פנוي...';
             socket.emit('find-partner');
         });
 
