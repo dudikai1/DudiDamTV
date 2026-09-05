@@ -110,7 +110,7 @@
             background-color: #181818;
         }
 
-        /* פאנל תחתון: כפתורים בצד שמאל, צ'אט תופס את שאר הרוחב מימין */
+        /* פאנל תחתון */
         .bottom-panel {
             display: flex;
             gap: 10px;
@@ -119,7 +119,7 @@
             align-items: center;
         }
 
-        /* כפתורי התחל ועצור (קטנים ומסודרים בשמאל) */
+        /* כפתורי התחל ועצור בשמאל */
         .controls-group {
             display: flex;
             gap: 10px;
@@ -142,9 +142,9 @@
         #startBtn { background-color: #66bb6a; }
         #stopBtn { background-color: #ffab91; }
 
-        /* צ'אט מוגדל שמתפרס על כל שאר השטח מימין */
+        /* צ'אט בגודל ביניים בצד ימין */
         .chat-container { 
-            flex: 1;
+            width: 550px;
             height: 100%;
             background-color: #f9f9f9;
             border-radius: 8px;
@@ -154,6 +154,7 @@
             overflow: hidden;
             color: #333;
             position: relative;
+            margin-right: auto;
         }
         .messages { flex: 1; padding: 4px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
         .message { background-color: #e0e0e0; padding: 3px 8px; border-radius: 6px; max-width: 90%; word-break: break-word; }
@@ -189,7 +190,7 @@
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 <div class="videos">
-                    <!-- מסך צד שני (שמאל) עם לוגו טלוויזיה נקי ללא הורדות -->
+                    <!-- מסך צד שני (שמאל) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -210,9 +211,9 @@
                     </div>
                 </div>
                 
-                <!-- פאנל תחתון: כפתורים בשמאל, צ'אט ענק שותפש את השאר מימין -->
+                <!-- פאנל תחתון: צ'אט ביניים מימין, כפתורים משמאל -->
                 <div class="bottom-panel">
-                    <!-- צ'אט מימין תופס את כל הרוחב -->
+                    <!-- צ'אט בגודל ביניים מימין -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -224,7 +225,7 @@
                         </div>
                     </div>
 
-                    <!-- כפתורים בשמאל -->
+                    <!-- כפתורים משמאל -->
                     <div class="controls-group">
                         <button class="ctrl-btn" id="startBtn">התחל</button>
                         <button class="ctrl-btn" id="stopBtn">עצור</button>
