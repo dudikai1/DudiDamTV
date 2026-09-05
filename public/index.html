@@ -117,13 +117,7 @@
             height: 110px;
             width: 100%;
             align-items: center;
-        }
-
-        /* כפתורי התחל ועצור בשמאל */
-        .controls-group {
-            display: flex;
-            gap: 10px;
-            height: 100%;
+            justify-content: space-between;
         }
 
         .ctrl-btn {
@@ -142,9 +136,9 @@
         #startBtn { background-color: #66bb6a; }
         #stopBtn { background-color: #ffab91; }
 
-        /* צ'אט בגודל ביניים בצד ימין */
+        /* צ'אט שמתאים את עצמו בדיוק עד לקצה של טקסט האזהרה מימין */
         .chat-container { 
-            width: 550px;
+            flex: 1;
             height: 100%;
             background-color: #f9f9f9;
             border-radius: 8px;
@@ -154,7 +148,7 @@
             overflow: hidden;
             color: #333;
             position: relative;
-            margin-right: auto;
+            margin-right: 0;
         }
         .messages { flex: 1; padding: 4px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
         .message { background-color: #e0e0e0; padding: 3px 8px; border-radius: 6px; max-width: 90%; word-break: break-word; }
@@ -211,9 +205,11 @@
                     </div>
                 </div>
                 
-                <!-- פאנל תחתון: צ'אט ביניים מימין, כפתורים משמאל -->
+                <!-- פאנל תחתון: עצור בשמאל, התחל באמצע, צ'אט מימין עד קצה הטקסט -->
                 <div class="bottom-panel">
-                    <!-- צ'אט בגודל ביניים מימין -->
+                    <button class="ctrl-btn" id="stopBtn">עצור</button>
+                    <button class="ctrl-btn" id="startBtn">התחל</button>
+                    
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -223,12 +219,6 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
-                    </div>
-
-                    <!-- כפתורים משמאל -->
-                    <div class="controls-group">
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
