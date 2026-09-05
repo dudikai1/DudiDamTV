@@ -110,7 +110,7 @@
             background-color: #181818;
         }
 
-        /* פאנל תחתון: צ'אט מימין, כפתורים באמצע */
+        /* פאנל תחתון: צ'אט ומימין לו כפתורים */
         .bottom-panel {
             display: flex;
             gap: 12px;
@@ -119,9 +119,10 @@
             align-items: center;
         }
 
-        /* צ'אט בצד ימין */
+        /* צ'אט מוקטן מימין */
         .chat-container { 
-            flex: 1;
+            width: 350px;
+            flex-shrink: 0;
             height: 100%;
             background-color: #fff;
             border-radius: 12px;
@@ -155,13 +156,12 @@
         .chat-input .emoji-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 0 6px; }
         .chat-input .send-btn { background: #66bb6a; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 6px; }
 
-        /* כפתורים באמצע */
+        /* כפתורים מוגדלים באמצע/שמאל לצד הצ'אט */
         .controls-group {
             display: flex;
             gap: 12px;
             height: 100%;
-            width: 420px;
-            flex-shrink: 0;
+            flex: 1;
         }
 
         .ctrl-btn {
@@ -214,7 +214,7 @@
                     </div>
                 </div>
                 
-                <!-- פאנל תחתון: צ'אט מימין, כפתורים באמצע -->
+                <!-- פאנל תחתון: צ'אט קטן מימין, כפתורים ענקיים לידו -->
                 <div class="bottom-panel">
                     <!-- צ'אט תחתון בצד ימין -->
                     <div class="chat-container">
@@ -229,7 +229,7 @@
                         </div>
                     </div>
 
-                    <!-- כפתורים באמצע -->
+                    <!-- כפתורים בשאר השטח באמצע -->
                     <div class="controls-group">
                         <button class="ctrl-btn" id="stopBtn">עצור</button>
                         <button class="ctrl-btn" id="startBtn">התחל</button>
