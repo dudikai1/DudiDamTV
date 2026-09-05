@@ -110,7 +110,7 @@
             background-color: #181818;
         }
 
-        /* פאנל תחתון מדויק לפי התמונה */
+        /* פאנל תחתון: כפתורים בצד שמאל, צ'אט תופס את שאר הרוחב מימין */
         .bottom-panel {
             display: flex;
             gap: 10px;
@@ -119,9 +119,15 @@
             align-items: center;
         }
 
-        /* כפתור התחל (מימין לעצור) */
+        /* כפתורי התחל ועצור (קטנים ומסודרים בשמאל) */
+        .controls-group {
+            display: flex;
+            gap: 10px;
+            height: 100%;
+        }
+
         .ctrl-btn {
-            font-size: 26px;
+            font-size: 20px;
             font-weight: bold;
             border: none;
             border-radius: 8px;
@@ -129,32 +135,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 150px;
+            width: 110px;
             height: 100%;
             color: #fff;
         }
         #startBtn { background-color: #66bb6a; }
         #stopBtn { background-color: #ffab91; }
 
-        /* קוביות מדינה ואני */
-        .option-card {
-            background-color: #f1f1f1;
-            border-radius: 8px;
-            width: 150px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            border: 1px solid #ddd;
-            color: #333;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .option-card span { font-size: 22px; }
-
-        /* צ'אט מימין תופס את שאר השטח */
+        /* צ'אט מוגדל שמתפרס על כל שאר השטח מימין */
         .chat-container { 
             flex: 1;
             height: 100%;
@@ -201,7 +189,7 @@
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 <div class="videos">
-                    <!-- מסך צד שני (שמאל) עם טלוויזיה נקיות בלי הורדות -->
+                    <!-- מסך צד שני (שמאל) עם לוגו טלוויזיה נקי ללא הורדות -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -222,22 +210,9 @@
                     </div>
                 </div>
                 
-                <!-- פאנל תחתון מדויק לפי הסדר שביקשת -->
+                <!-- פאנל תחתון: כפתורים בשמאל, צ'אט ענק שותפש את השאר מימין -->
                 <div class="bottom-panel">
-                    <button class="ctrl-btn" id="startBtn">התחל</button>
-                    <button class="ctrl-btn" id="stopBtn">עצור</button>
-                    
-                    <div class="option-card">
-                        <div>מדינה</div>
-                        <span>🌍</span>
-                    </div>
-
-                    <div class="option-card">
-                        <div>אני</div>
-                        <span>👦</span>
-                    </div>
-
-                    <!-- צ'אט מימין -->
+                    <!-- צ'אט מימין תופס את כל הרוחב -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -247,6 +222,12 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
+                    </div>
+
+                    <!-- כפתורים בשמאל -->
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
