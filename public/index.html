@@ -124,6 +124,7 @@
             position: relative;
             align-items: center;
             gap: 10px;
+            justify-content: space-between;
         }
 
         .controls-group {
@@ -198,9 +199,8 @@
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 
-                <!-- המסכים: השני מופיע ראשון ב-HTML כדי שיקפוץ לשמאל, ואתה מופיע שני כדי להיזרק לימין -->
+                <!-- חלק עליון: מסך שני בשמאל, המצלמה שלך בימין -->
                 <div class="videos">
-                    <!-- מסך צד שני (שמאל) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
                             <div class="tv-logo-box">
@@ -215,21 +215,18 @@
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
                     </div>
 
-                    <!-- מסך המצלמה שלך (ימין) -->
                     <div class="video-box local-box">
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
                 </div>
                 
-                <!-- פאנל תחתון באותו סדר בדיוק -->
+                <!-- חלק תחתון: כפתורים בשמאל, צ'אט בימין -->
                 <div class="bottom-panel">
-                    <!-- כפתורים (שמאל - מתחת למסך השני) -->
                     <div class="controls-group">
                         <button class="ctrl-btn" id="startBtn">התחל</button>
                         <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
 
-                    <!-- צ'אט (ימין - מתחת למצלמה שלך) -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
