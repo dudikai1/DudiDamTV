@@ -78,7 +78,6 @@
             gap: 10px;
         }
         
-        /* משתמש ב-row-reverse כדי לזרוק אותך (האלמנט הראשון) ימינה ואת השני לשמאל */
         .videos { 
             display: flex; 
             width: 100%; 
@@ -86,7 +85,6 @@
             gap: 10px; 
             justify-content: center; 
             align-items: center; 
-            flex-direction: row-reverse; 
         }
         
         .video-box {
@@ -119,7 +117,6 @@
             background-color: #181818;
         }
 
-        /* פאנל תחתון - הפוך גם כן כדי שהצ'אט יישב מתחתייך והכפתורים מתחת לשני */
         .bottom-panel {
             display: flex;
             height: 110px;
@@ -127,7 +124,6 @@
             position: relative;
             align-items: center;
             gap: 10px;
-            flex-direction: row-reverse;
         }
 
         .controls-group {
@@ -202,13 +198,8 @@
             <div class="video-container">
                 <div id="status">לחץ על "התחל" כדי להתחבר</div>
                 
-                <!-- המסכים: הראשון ברשימה יופיע בימין בזכות ה-row-reverse -->
+                <!-- המסכים: השני מופיע ראשון ב-HTML כדי שיקפוץ לשמאל, ואתה מופיע שני כדי להיזרק לימין -->
                 <div class="videos">
-                    <!-- מסך המצלמה שלך (ימין) -->
-                    <div class="video-box local-box">
-                        <video id="localVideo" autoplay playsinline muted></video>
-                    </div>
-
                     <!-- מסך צד שני (שמאל) -->
                     <div class="video-box" id="remoteBox">
                         <div id="remotePlaceholder">
@@ -223,10 +214,21 @@
                         </div>
                         <video id="remoteVideo" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
                     </div>
+
+                    <!-- מסך המצלמה שלך (ימין) -->
+                    <div class="video-box local-box">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                    </div>
                 </div>
                 
-                <!-- פאנל תחתון -->
+                <!-- פאנל תחתון באותו סדר בדיוק -->
                 <div class="bottom-panel">
+                    <!-- כפתורים (שמאל - מתחת למסך השני) -->
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
+                    </div>
+
                     <!-- צ'אט (ימין - מתחת למצלמה שלך) -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
@@ -237,12 +239,6 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
-                    </div>
-
-                    <!-- כפתורים (שמאל - מתחת למסך השני) -->
-                    <div class="controls-group">
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
