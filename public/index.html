@@ -101,7 +101,6 @@
             border: 2px solid #333;
         }
 
-        /* מסך שני בשמאל, מסך שלך בימין */
         #remoteBox { order: 1; } 
         .local-box { order: 2; } 
 
@@ -125,18 +124,19 @@
         /* פאנל תחתון */
         .bottom-panel {
             display: flex;
-            gap: 10px;
             height: 110px;
             width: 100%;
+            position: relative;
             align-items: center;
-            flex-direction: row;
         }
 
-        /* צ'אט בצד ימין */
+        /* צ'אט מקובע בצד ימין (מתחת למסך שלך) */
         .chat-container { 
-            order: 1;
-            flex: 1;
-            height: 100%;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 49%; /* בדיוק ברוחב של מסך המצלמה שלך למעלה */
+            height: 110px;
             background-color: #f9f9f9;
             border-radius: 8px;
             display: flex; 
@@ -144,16 +144,18 @@
             border: 1px solid #ddd;
             overflow: hidden;
             color: #333;
-            position: relative;
         }
 
-        /* כפתורים באמצע: עצור במרכז, התחל לידו בדיוק בסדר הנכון */
+        /* כפתורים ממוקמים במרכז (מתחת למסך השמאלי) */
         .controls-group {
-            order: 2;
+            position: absolute;
+            left: 0;
+            width: 49%; /* ברוחב של המסך השמאלי */
             display: flex;
             gap: 10px;
-            height: 100%;
-            flex-direction: row;
+            height: 110px;
+            justify-content: center;
+            align-items: center;
         }
 
         .ctrl-btn {
@@ -165,34 +167,34 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 110px;
+            width: 130px;
             height: 100%;
             color: #fff;
         }
-        #stopBtn { background-color: #ffab91; order: 2; }
-        #startBtn { background-color: #66bb6a; order: 1; }
+        #stopBtn { background-color: #ffab91; }
+        #startBtn { background-color: #66bb6a; }
 
-        .messages { flex: 1; padding: 4px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
-        .message { background-color: #e0e0e0; padding: 3px 8px; border-radius: 6px; max-width: 90%; word-break: break-word; }
+        .messages { flex: 1; padding: 2px 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+        .message { background-color: #e0e0e0; padding: 2px 6px; border-radius: 4px; max-width: 90%; word-break: break-word; }
         .message.self { align-self: flex-start; background-color: #c8e6c9; color: #000; }
         
         .chat-rules-banner {
             background-color: #fff;
             border-bottom: 1px solid #eee;
-            padding: 6px 10px;
-            font-size: 11px;
+            padding: 4px 8px;
+            font-size: 10px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             color: #666;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .chat-input { display: flex; padding: 6px 10px; background-color: #f1f1f1; border-top: 1px solid #ddd; align-items: center; }
-        .chat-input input { flex: 1; border: none; background: transparent; color: #000; font-size: 13px; outline: none; }
-        .chat-input .emoji-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 0 4px; }
+        .chat-input { display: flex; padding: 4px 8px; background-color: #f1f1f1; border-top: 1px solid #ddd; align-items: center; }
+        .chat-input input { flex: 1; border: none; background: transparent; color: #000; font-size: 12px; outline: none; }
+        .chat-input .emoji-btn { background: none; border: none; font-size: 14px; cursor: pointer; padding: 0 2px; }
 
         #status { position: absolute; top: 15px; left: 20px; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; z-index: 10; }
     </style>
@@ -229,7 +231,13 @@
                 
                 <!-- פאנל תחתון -->
                 <div class="bottom-panel">
-                    <!-- צ'אט בצד ימין (מתחת למסך שלך) -->
+                    <!-- כפתורים באמצע מתחת למסך השמאלי: עצור במרכז, התחל לידו -->
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
+                    </div>
+
+                    <!-- צ'אט בצד ימין מתחת למסך שלך -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
@@ -239,12 +247,6 @@
                             <input type="text" id="msgInput" placeholder="כתוב הודעה...">
                             <button class="emoji-btn">😊</button>
                         </div>
-                    </div>
-
-                    <!-- כפתורים באמצע: התחל ואז עצור לידו -->
-                    <div class="controls-group">
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
                     </div>
                 </div>
             </div>
