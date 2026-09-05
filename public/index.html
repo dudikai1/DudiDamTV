@@ -131,10 +131,10 @@
             align-items: center;
         }
 
-        /* כפתורים מתחת למסך שלך (מימין): עצור צמוד לצ'אט, התחל צמוד לעצור */
+        /* כפתורים מתחת למסך השני (שמאל): עצור ואז התחל צמודים אחד לשני */
         .controls-group {
             position: absolute;
-            right: 0;
+            left: 0;
             top: 0;
             width: 49%;
             display: flex;
@@ -160,10 +160,10 @@
         #stopBtn { background-color: #ffab91; }
         #startBtn { background-color: #66bb6a; }
 
-        /* צ'אט מתחת למסך השני (משמאל) */
+        /* צ'אט מתחת למסך שלך (ימין) */
         .chat-container { 
             position: absolute;
-            left: 0;
+            right: 0;
             top: 0;
             width: 49%;
             height: 110px;
@@ -233,13 +233,13 @@
                 
                 <!-- פאנל תחתון -->
                 <div class="bottom-panel">
-                    <!-- כפתורים מתחת למסך שלך (ימין): עצור ואז התחל לידו -->
+                    <!-- כפתורים מתחת למסך השני (שמאל): עצור ואז התחל צמודים -->
                     <div class="controls-group">
                         <button class="ctrl-btn" id="stopBtn">עצור</button>
                         <button class="ctrl-btn" id="startBtn">התחל</button>
                     </div>
 
-                    <!-- צ'אט מתחת למסך השני (שמאל) -->
+                    <!-- צ'אט מתחת למסך שלך (ימין) -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
                             ⚠️ על ידי לחיצה על "התחל", אתה מסכים לחוקים שלנו. מפרי החוקים ייחסמו. ודא שפניך נראים בתוך מסגרת המצלמה.
