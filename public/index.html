@@ -60,8 +60,8 @@
             border-radius: 50%;
         }
 
-        .tv-title-1 { color: #fff; font-size: 36px; font-weight: bold; font-family: monospace; letter-spacing: 1px; }
-        .tv-title-2 { color: #69f0ae; font-size: 38px; font-weight: bold; font-family: monospace; }
+        .tv-title-1 { color: #fff; font-size: 32px; font-weight: bold; font-family: monospace; letter-spacing: 1px; }
+        .tv-title-2 { color: #69f0ae; font-size: 34px; font-weight: bold; font-family: monospace; }
 
         #main-app { display: flex; flex-direction: column; height: 100vh; width: 100vw; position: relative; }
         header { background-color: #1f1f1f; padding: 10px; text-align: center; font-size: 18px; font-weight: bold; color: #00e676; border-bottom: 2px solid #333; }
@@ -122,7 +122,7 @@
         .store-badge { color: #fff; font-size: 13px; display: flex; flex-direction: column; }
         .store-badge span { font-weight: bold; font-size: 15px; }
 
-        /* שורה תחתונה: כפתורים באמצע וצ'אט בצד ימין */
+        /* שורה תחתונה: כפתורים בגדול באמצע וצ'אט בצד ימין */
         .bottom-panel {
             display: flex;
             gap: 12px;
@@ -135,11 +135,11 @@
             display: flex;
             gap: 12px;
             height: 100%;
-            width: 320px;
+            width: 420px;
         }
 
         .ctrl-btn {
-            font-size: 24px;
+            font-size: 32px;
             font-weight: bold;
             border: none;
             border-radius: 12px;
@@ -152,10 +152,10 @@
             height: 100%;
         }
 
-        #startBtn { background-color: #66bb6a; color: #fff; font-size: 26px; }
-        #stopBtn { background-color: #ffab91; color: #fff; font-size: 26px; }
+        #startBtn { background-color: #66bb6a; color: #fff; }
+        #stopBtn { background-color: #ffab91; color: #fff; }
 
-        /* צ'אט תחתון בצד ימין */
+        /* צ'אט תחתון בצד ימין (הופך לשמאל מבחינת סדר ה-HTML כך שיישב מימין ב-RTL) */
         .chat-container { 
             flex: 1;
             height: 100%;
@@ -211,7 +211,7 @@
                                     <div class="tv-btn-dot"></div>
                                     <div class="tv-btn-dot"></div>
                                 </div>
-                                <div class="tv-title-1">Ome</div>
+                                <div class="tv-title-1">NISSIM</div>
                                 <div class="tv-title-2">TV</div>
                             </div>
                             <div class="app-stores">
@@ -228,13 +228,8 @@
                     </div>
                 </div>
                 
-                <!-- פאנל תחתון: כפתורים באמצע וצ'אט בצד ימין -->
+                <!-- פאנל תחתון: צ'אט בצד ימין (ראשון ב-RTL) וכפתורים בגדול באמצע -->
                 <div class="bottom-panel">
-                    <div class="controls-group">
-                        <button class="ctrl-btn" id="stopBtn">עצור</button>
-                        <button class="ctrl-btn" id="startBtn">התחל</button>
-                    </div>
-
                     <!-- צ'אט תחתון בצד ימין -->
                     <div class="chat-container">
                         <div class="chat-rules-banner">
@@ -246,6 +241,12 @@
                             <button class="emoji-btn">😊</button>
                             <button class="send-btn" id="sendBtn">שלח</button>
                         </div>
+                    </div>
+
+                    <!-- כפתורים באמצע -->
+                    <div class="controls-group">
+                        <button class="ctrl-btn" id="stopBtn">עצור</button>
+                        <button class="ctrl-btn" id="startBtn">התחל</button>
                     </div>
                 </div>
             </div>
@@ -285,7 +286,7 @@
                 await initCamera();
                 if (!localStream) return;
             }
-            statusDiv.textContent = 'מחפש משתמש פנוי...';
+            statusDiv.textContent = 'מחפש משתמש פנוي...';
             socket.emit('find-partner');
         });
 
